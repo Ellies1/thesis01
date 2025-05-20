@@ -1,0 +1,30 @@
+version: '3.1'
+services:
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: hive
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: metastore_db
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+
+  hive:
+    build:
+      context: .
+      dockerfile: Dockerfile-hive
+    image: sacheendra/hive:4.0.0-beta-1
+    restart: always
+    ports:
+      - 9083:9083
+    environment:
+      SERVICE_OPTS: "-Djavax.jdo.option.ConnectionDriverName=org.postgresql.Driver -Djavax.jdo.option.ConnectionURL=jdbc:postgresql://db:5432/metastore_db -Djavax.jdo.option.ConnectionUserName=hive -Djavax.jdo.option.ConnectionPassword=password"
+      SERVICE_NAME: metastore
+      DB_DRIVER: postgres
+      SKIP_SCHEMA_INIT: "false"
+    volumes:
+      - ./warehouse:/opt/hive/data/warehouse
+    links:
+      - db:db
