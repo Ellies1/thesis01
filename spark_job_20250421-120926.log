@@ -1,0 +1,138 @@
+25/04/21 12:09:28 WARN Utils: Your hostname, node6 resolves to a loopback address: 127.0.1.1; using 10.100.1.106 instead (on interface enp216s0np0)
+25/04/21 12:09:28 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+25/04/21 12:09:29 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+25/04/21 12:09:29 INFO SparkKubernetesClientFactory: Auto-configuring K8S client using current context from users K8S config file
+25/04/21 12:09:29 INFO KerberosConfDriverFeatureStep: You have not specified a krb5.conf file locally or via a ConfigMap. Make sure that you have the krb5.conf locally on the driver image.
+25/04/21 12:09:30 INFO LoggingPodStatusWatcherImpl: State changed, new state: 
+	 pod name: spark-ca-debug-629d46965840e18e-driver
+	 namespace: default
+	 labels: spark-app-name -> spark-ca-debug, spark-app-selector -> spark-4a3d0e5b040b48fc83de013e0410f942, spark-role -> driver, spark-version -> 3.4.4
+	 pod uid: 55e00196-1100-4e5b-aee4-7d1b4c762f14
+	 creation time: 2025-04-21T12:09:30Z
+	 service account name: spark
+	 volumes: spark-local-dir-1, spark-conf-volume-driver, kube-api-access-7ttcs
+	 node name: cloud0zsong
+	 start time: 2025-04-21T12:09:30Z
+	 phase: Pending
+	 container status: 
+		 container name: spark-kubernetes-driver
+		 container image: elliesgood00/1213:k8s-trusted-with-example
+		 container state: waiting
+		 pending reason: ContainerCreating
+25/04/21 12:09:30 INFO LoggingPodStatusWatcherImpl: Waiting for application spark-ca-debug with submission ID default:spark-ca-debug-629d46965840e18e-driver to finish...
+25/04/21 12:09:31 INFO LoggingPodStatusWatcherImpl: State changed, new state: 
+	 pod name: spark-ca-debug-629d46965840e18e-driver
+	 namespace: default
+	 labels: spark-app-name -> spark-ca-debug, spark-app-selector -> spark-4a3d0e5b040b48fc83de013e0410f942, spark-role -> driver, spark-version -> 3.4.4
+	 pod uid: 55e00196-1100-4e5b-aee4-7d1b4c762f14
+	 creation time: 2025-04-21T12:09:30Z
+	 service account name: spark
+	 volumes: spark-local-dir-1, spark-conf-volume-driver, kube-api-access-7ttcs
+	 node name: cloud0zsong
+	 start time: 2025-04-21T12:09:30Z
+	 phase: Pending
+	 container status: 
+		 container name: spark-kubernetes-driver
+		 container image: elliesgood00/1213:k8s-trusted-with-example
+		 container state: waiting
+		 pending reason: ContainerCreating
+25/04/21 12:09:31 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Pending)
+25/04/21 12:09:32 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Pending)
+25/04/21 12:09:33 INFO LoggingPodStatusWatcherImpl: State changed, new state: 
+	 pod name: spark-ca-debug-629d46965840e18e-driver
+	 namespace: default
+	 labels: spark-app-name -> spark-ca-debug, spark-app-selector -> spark-4a3d0e5b040b48fc83de013e0410f942, spark-role -> driver, spark-version -> 3.4.4
+	 pod uid: 55e00196-1100-4e5b-aee4-7d1b4c762f14
+	 creation time: 2025-04-21T12:09:30Z
+	 service account name: spark
+	 volumes: spark-local-dir-1, spark-conf-volume-driver, kube-api-access-7ttcs
+	 node name: cloud0zsong
+	 start time: 2025-04-21T12:09:30Z
+	 phase: Running
+	 container status: 
+		 container name: spark-kubernetes-driver
+		 container image: docker.io/elliesgood00/1213:k8s-trusted-with-example
+		 container state: running
+		 container started at: 2025-04-21T12:09:32Z
+25/04/21 12:09:33 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:34 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:35 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:36 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:37 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:38 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:39 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:40 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:41 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:42 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:43 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:44 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:45 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:46 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:47 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:48 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:49 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:50 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:51 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:52 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:53 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:54 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:55 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:56 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:57 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:58 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:09:59 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:00 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:01 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:02 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:03 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:04 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:05 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:06 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:07 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:08 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:09 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:10 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:12 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:13 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:14 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:15 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:16 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:17 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:18 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:19 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:20 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:21 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:22 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:23 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:24 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:25 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:26 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:27 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:28 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:29 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:30 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:31 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:32 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:33 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:34 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:35 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:36 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:37 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:38 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:39 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:40 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:41 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:42 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:43 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:44 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:45 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:46 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:47 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:48 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:49 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:50 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:51 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:52 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:53 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:54 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)
+25/04/21 12:10:55 INFO LoggingPodStatusWatcherImpl: Application status for spark-4a3d0e5b040b48fc83de013e0410f942 (phase: Running)

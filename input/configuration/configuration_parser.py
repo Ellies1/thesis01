@@ -332,6 +332,7 @@ def parse_infrastructure(parser, input_config, config):
         ["middleIP", int, lambda x: 0 < x < 255, False, "100"],
         ["middleIP_base", int, lambda x: 0 < x < 255, False, "90"],
         ["delete", bool, lambda x: x in [True, False], False, False],
+        ["virtiofsd", bool, lambda x: x in [True, False], False, False],
     ]
 
     for s in settings:

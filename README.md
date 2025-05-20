@@ -329,3 +329,152 @@ ssh [username]@localhost -p 7777
 
 # Acknowledgment
 This work is funded by NWO TOP OffSense (OCENW.KLEIN.209).
+
+
+# Setting Up Scaphandre Integration in Continuum (QEMU Backend)
+
+This README documents how to successfully integrate [Scaphandre](https://github.com/hubblo-org/scaphandre) energy monitoring into the [Continuum](https://github.com/atlarge-research/continuum) framework using QEMU with `virtiofsd`.
+
+## Overview
+By default, Continuum's QEMU provider does not include energy monitoring support via Scaphandre. This guide shows how to:
+
+1. Modify Continuum to enable Scaphandre.
+2. Enable `virtiofsd` support for directory sharing.
+3. Automatically mount shared directories inside VMs.
+4. Run Scaphandre Prometheus exporters per VM.
+
+---
+
+## ✅ Final Output
+Once configured:
+- Each VM shares a directory with the host via `virtiofs`.
+- Scaphandre runs on the host, exporting metrics from each VM's directory.
+- Metrics are available via Prometheus at:
+  - `http://localhost:8080/cloud_controller_zsong`
+  - `http://localhost:8081/cloud0_zsong`
+
+---
+
+## 1. Pre-requisites
+- Ubuntu 20.04+ on host.
+- `libvirt`, `qemu`, `virtiofsd` installed.
+- Working Continuum environment.
+- SSH keys configured for VMs.
+
+---
+
+## 2. Continuum Modifications
+
+### A. `virtiofsd` toggle in config
+Edit your config file (e.g., `configuration/qemu_kube_only.cfg`):
+```ini
+[infrastructure]
+provider = qemu
+virtiofsd = true
+cloud_nodes = 2
+...
+```
+
+### B. Patch: `generate.py`
+In `infrastructure/qemu/generate.py`:
+
+- Create shared folders automatically:
+```python
+if virtiofsd_enabled and name.startswith("cloud"):
+    host_dir = f"/var/lib/libvirt/scaphandre/{name}"
+    os.makedirs(host_dir, exist_ok=True)
+```
+
+- Inject into domain XML:
+```python
+<filesystem type='mount' accessmode='passthrough'>
+  <driver type='virtiofs'/>
+  <source dir='/var/lib/libvirt/scaphandre/{name}'/>
+  <target dir='scaphandre'/>
+</filesystem>
+```
+
+- Enable mounting via `cloud-init`:
+```yaml
+runcmd:
+ - mkdir /var/scaphandre
+ - mount -t virtiofs scaphandre /var/scaphandre
+```
+
+- In `additional_commands()` function:
+```python
+def additional_commands(commands):
+    return "\n".join([" - " + cmd for cmd in commands])
+```
+
+### C. Optional: Reference Commit
+If using a Git repo, you can reference a commit like:
+```
+Modified `generate.py`: [commit abc1234] Adds virtiofsd mount logic and runcmd config.
+```
+
+---
+
+## 3. Host-Side Setup
+
+### A. Permissions Fixes
+```bash
+sudo chown -R $USER:$USER /home/zsong/continuum
+sudo chown -R $USER:$USER /mnt/sdc/zsong/.continuum
+sudo chown -R $USER:$USER /var/lib/libvirt/scaphandre
+```
+
+### B. Launch VMs
+```bash
+python3 continuum.py configuration/qemu_kube_only.cfg
+```
+
+---
+
+## 4. Running Scaphandre
+
+### A. Start exporters per VM
+```bash
+sudo scaphandre prometheus --no-header --bind 0.0.0.0:8080 --fs /var/lib/libvirt/scaphandre/cloud_controller_zsong &
+sudo scaphandre prometheus --no-header --bind 0.0.0.0:8081 --fs /var/lib/libvirt/scaphandre/cloud0_zsong &
+```
+
+### B. Verify
+```bash
+curl http://localhost:8080/metrics | head -n 10
+curl http://localhost:8081/metrics | head -n 10
+```
+
+### C. Confirm Mounting
+```bash
+ssh cloud_controller_zsong@192.168.166.2 -i ~/.ssh/id_rsa_continuum
+ls /var/scaphandre
+```
+You should see files added on the host.
+
+---
+
+## 5. Troubleshooting
+
+- If `/var/scaphandre` is empty:
+  - Ensure `/var/lib/libvirt/scaphandre/<vm_name>` has files.
+  - Verify `mount | grep scaphandre` inside VM.
+- If SSH fails:
+  - Run `virsh list --all` to confirm VM state.
+- If cloud-init commands are ignored:
+  - Check `cloud-init-output.log` inside VM.
+
+---
+
+## 6. Cleanup
+Kill all exporters:
+```bash
+sudo pkill -f scaphandre
+```
+
+---
+
+## 7. Summary
+This README walks through integrating Scaphandre with Continuum’s QEMU backend using virtiofsd for metric export. All modifications are lightweight and can be integrated via a simple config toggle and YAML injection.
+
+If you have questions, feel free to open an issue or ping me!

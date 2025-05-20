@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Specification-Title: Parquet Data Generator
+Specification-Version: 1.0
+Specification-Vendor: parquet-data-generator
+Implementation-Title: Parquet Data Generator
+Implementation-Version: 1.0
+Implementation-Vendor: parquet-data-generator
+Implementation-Vendor-Id: parquet-data-generator
+Main-Class: ParquetGenerator
+
