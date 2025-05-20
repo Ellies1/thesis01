@@ -13,6 +13,3 @@ scripts/*.csv
 scripts/*.pdf
 *.out
 .idea
-spark-data-generator/
-spark-sql-perf/
-tpcds-kit/
