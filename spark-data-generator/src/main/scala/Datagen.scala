@@ -5,7 +5,7 @@ object Datagen {
   def data(storagePath: String, dsdgenPath: String, spark: SparkSession, scaleFactor: String): Unit = {
     val sqlContext = spark.sqlContext
 
-    val databaseName = s"dataset_tpcds_${scaleFactor}G" // name of database to create.
+    val databaseName = s"dataset_tpcds_${scaleFactor}g" // name of database to create.
     val format = "parquet" // valid spark format like parquet "parquet".
     // Run:
     val tables = new TPCDSTables(sqlContext,
@@ -26,28 +26,27 @@ object Datagen {
       numPartitions = scaleFactor.toInt) // how many dsdgen partitions to run - number of input tasks.
   }
 
-  def metadata(storagePath: String, spark: SparkSession): Unit = {
+  def metadata(storagePath: String, scaleFactor: String, spark: SparkSession): Unit = {
     val sqlContext = spark.sqlContext
 
-    val databaseName = s"dataset_tpcds_100G" // name of database to create.
-    val scaleFactor = "100" // scaleFactor defines the size of the dataset to generate (in GB).
-    val format = "parquet" // valid spark format like parquet "parquet".
-    // Run:
-    val tables = new TPCDSTables(sqlContext,
-      dsdgenDir = "", // location of dsdgen
-      scaleFactor = scaleFactor,
-      useDoubleForDecimal = false, // true to replace DecimalType with DoubleType
-      useStringForDate = false) // true to replace DateType with StringType
-    val location = s"${storagePath}/${databaseName}"
+    val databaseName = s"dataset_tpcds_${scaleFactor}g"
+    val format = "parquet"
+    
 
-    spark.sql(s"create database if not exists $databaseName location '${location}'")
-    // Create metastore tables in a specified database for your data.
-    // Once tables are created, the current database will be switched to the specified database.
+    val tables = new TPCDSTables(sqlContext, dsdgenDir = "", scaleFactor = scaleFactor,
+      useDoubleForDecimal = false, useStringForDate = false)
+    val location = s"$storagePath/$databaseName"
+    spark.sql(s"CREATE DATABASE IF NOT EXISTS $databaseName LOCATION '$location'")
     tables.createExternalTables(location, format, databaseName, overwrite = true, discoverPartitions = true)
-    // Or, if you want to create temporary tables
-    // tables.createTemporaryTables(location, format)
-
-    // For CBO only, gather statistics on all columns:
     tables.analyzeTables(databaseName, analyzeColumns = true)
+    println("========== DEBUG ==========")
+    println("🟡 当前数据库列表：")
+    spark.catalog.listDatabases().show(false)
+
+    println("🟢 查看 dataset_tpcds_1g 中的表：")
+    spark.catalog.listTables(databaseName).show(false)
+
+    println("🔵 当前 session 使用的 database 是：" + spark.catalog.currentDatabase)
+
   }
 }
