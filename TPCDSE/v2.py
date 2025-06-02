@@ -6,9 +6,13 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from vm_power_mapper import power_collector_with_vm, plot_vm_power_per_config
 
-# === 用户可修改配置 ===
-scale_factor = 1
-query_file = "q3-v2.4"  # 容器内的查询脚本路径
+# === 多组实验配置 ===
+experiment_configs = [
+    {"name": "T1-1", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g"},
+    {"name": "T1-2", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 1, "mem": "4g"},
+    # {"name": "T1-3", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 2, "mem": "4g"},
+    # {"name": "T1-4", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "4g"},
+]
 
 # === 路径与设置 ===
 RESULT_DIR = "result"
@@ -23,7 +27,6 @@ vm_ip = "192.168.166.3"
 vm_user = "cloud0_zsong"
 vm_ssh_key = "/home/zsong/.ssh/id_rsa_continuum"
 vm_data_dir = "/tpcds-data"
-dataset_dir = f"{vm_data_dir}/dataset_tpcds_{scale_factor}g"
 
 # === Spark 提交命令基础 ===
 spark_submit_base = [
@@ -44,7 +47,6 @@ spark_submit_base = [
     "--conf", "spark.sql.catalogImplementation=hive",
     "--conf", "spark.hadoop.javax.jdo.option.ConnectionURL=jdbc:derby:;databaseName=/tpcds-data/metastore_db;create=true",
     "--conf", "spark.sql.warehouse.dir=/tpcds-data/hive-warehouse",
-    "--conf", "spark.executor.memory=6g",
     "--conf", "spark.executor.memoryOverhead=2g",
     "--conf", "spark.driver.memory=4g",
     "--conf", "spark.driver.memoryOverhead=1g",
@@ -146,60 +148,115 @@ def cleanup_k8s_pods():
     except subprocess.CalledProcessError as e:
         print(f"[⚠️] Failed to clean up Kubernetes pods:\n{e.stderr.decode()}")
 
+def is_host_idle(threshold_idle=95.0, check_duration=5, interval=1):
+    idle_counts = 0
+    total_checks = check_duration // interval
+
+    for _ in range(total_checks):
+        try:
+            output = subprocess.check_output("top -b -n 1 | grep '%Cpu(s)'", shell=True).decode()
+            parts = output.split(",")
+            for part in parts:
+                if "id" in part:
+                    idle_str = part.strip().split()[0]
+                    idle_val = float(idle_str)
+                    if idle_val >= threshold_idle:
+                        idle_counts += 1
+        except Exception as e:
+            print(f"Error checking CPU idle: {e}")
+        time.sleep(interval)
+
+    return idle_counts == total_checks
+
+def wait_until_idle():
+    print("🕓 Checking if host is idle before next experiment...")
+    while not is_host_idle():
+        print("Host not idle yet. Waiting 10s before rechecking...")
+        time.sleep(10)
+    print("✅ Host is idle. Proceeding...")
 
 def main():
-    config_name = f"tpcds_{query_file.replace('.sql','')}"
-
     ensure_scaphandre_qemu_running()
     ensure_scaphandre_prometheus_running()
-    cleanup_k8s_pods()
+    cleanup_k8s_pods()  # 只清一次
 
-    check_dataset_cmd = f'ssh {vm_user}@{vm_ip} -i {vm_ssh_key} "test -d {dataset_dir} && echo FOUND || echo NOT_FOUND"'
-    check_output = subprocess.getoutput(check_dataset_cmd)
-    if "FOUND" in check_output:
-        print("⚠️ 检测到旧数据，即将清理...\n")
-        cleanup_cmd = [
-            "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
-            f"sudo rm -rf {vm_data_dir}"
-        ]
-        run(cleanup_cmd, f"删除旧目录 {vm_data_dir}")
-
-    mkdir_cmd = [
-        "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
-        f"sudo mkdir -p {vm_data_dir} && sudo chmod -R 777 {vm_data_dir}"
-    ]
-    run(mkdir_cmd, f"创建 VM 上的目录 {vm_data_dir}")
-
-    datagen_cmd = spark_submit_base + ["datagen", vm_data_dir, "/opt/tpcds-kit/tools", str(scale_factor)]
-    metagen_cmd = spark_submit_base + ["metagen", vm_data_dir, str(scale_factor)]
-    query_cmd = spark_submit_base + ["query", query_file, str(scale_factor)]
-
-    total_energy = 0.0
-    total_energy += run_spark_phase("datagen", datagen_cmd, config_name)
-    total_energy += run_spark_phase("metagen", metagen_cmd, config_name)
-    total_energy += run_spark_phase("query", query_cmd, config_name)
-
-    # 写入总能耗
-    energy_out = os.path.join(RESULT_DIR, f"energy_{config_name}.txt")
-    with open(energy_out, "w") as f:
-        f.write(f"{total_energy:.6f}\n")
-    print(f"✅ Total energy for {config_name}: {total_energy:.6f} J")
-
-    # 绘图
-    print("\nDrawing power-over-time charts...")
-    plot_vm_power_per_config()
-
-    print("\nDrawing energy bar chart...")
     energy_data = {}
-    for fname in os.listdir(RESULT_DIR):
-        if fname.startswith("energy_") and fname.endswith(".txt"):
-            key = fname.replace("energy_", "").replace(".txt", "")
-            try:
-                with open(os.path.join(RESULT_DIR, fname)) as f:
-                    energy_data[key] = float(f.read().strip())
-            except:
-                continue
 
+    for exp in experiment_configs:
+        # === 提取实验参数 ===
+        config_name = exp["name"]
+        scale_factor = exp["scale"]
+        query_file = exp["query"]
+        instances = exp["instances"]
+        cores = exp["cores"]
+        mem = exp["mem"]
+        config_label = f"{config_name}"
+
+        # === 路径设置 ===
+        dataset_dir = f"{vm_data_dir}/dataset_tpcds_{scale_factor}g"
+
+        # === 每轮清空旧数据 ===
+        check_dataset_cmd = f'ssh {vm_user}@{vm_ip} -i {vm_ssh_key} "test -d {dataset_dir} && echo FOUND || echo NOT_FOUND"'
+        check_output = subprocess.getoutput(check_dataset_cmd)
+        if "FOUND" in check_output:
+            print("⚠️ 检测到旧数据，即将清理...\n")
+            cleanup_cmd = [
+                "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
+                f"sudo rm -rf {vm_data_dir}"
+            ]
+            run(cleanup_cmd, f"删除旧目录 {vm_data_dir}")
+
+        mkdir_cmd = [
+            "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
+            f"sudo mkdir -p {vm_data_dir} && sudo chmod -R 777 {vm_data_dir}"
+        ]
+        run(mkdir_cmd, f"创建 VM 上的目录 {vm_data_dir}")
+
+        # === 构建 Spark 提交命令 ===
+        spark_cmd_base = spark_submit_base.copy()
+        spark_cmd_base += [
+            "--conf", f"spark.executor.instances={instances}",
+            "--conf", f"spark.executor.cores={cores}",
+            "--conf", f"spark.executor.memory={mem}"
+        ]
+
+        jar_path = spark_submit_base[-1]  # "local:///opt/tpcds/parquet-data-generator_2.12-1.0.jar"
+        submit_prefix = spark_submit_base[:-1]  # 除去最后的 JAR
+        dynamic_confs = [
+            "--conf", f"spark.executor.instances={instances}",
+            "--conf", f"spark.executor.cores={cores}",
+            "--conf", f"spark.executor.memory={mem}"
+        ]
+
+        # 构造完整 spark-submit 命令
+        datagen_args = ["datagen", vm_data_dir, "/opt/tpcds-kit/tools", str(scale_factor)]
+        datagen_cmd = submit_prefix + dynamic_confs + [jar_path] + datagen_args
+        metagen_args = ["metagen", vm_data_dir, str(scale_factor)]
+        metagen_cmd = submit_prefix + dynamic_confs + [jar_path] + metagen_args
+        query_args = ["query", query_file, str(scale_factor)]
+        query_cmd = submit_prefix + dynamic_confs + [jar_path] + query_args
+
+        # === 每轮运行任务并记录能耗 ===
+        total_energy = 0.0
+        total_energy += run_spark_phase("datagen", datagen_cmd, config_label)
+        total_energy += run_spark_phase("metagen", metagen_cmd, config_label)
+        total_energy += run_spark_phase("query", query_cmd, config_label)
+
+        # === 每轮写入能耗数值文本 ===
+        energy_out = os.path.join(RESULT_DIR, f"energy_{config_name}.txt")
+        with open(energy_out, "w") as f:
+            f.write(f"{total_energy:.6f}\n")
+        print(f"✅ Total energy for {config_name}: {total_energy:.6f} J")
+
+        # === 每轮绘制 power-over-time 曲线图（函数内部已保存） ===
+        print("\nDrawing power-over-time chart for:", config_label)
+        plot_vm_power_per_config()
+
+        # === 收集绘制 bar chart 所需数据 ===
+        energy_data[config_name] = total_energy
+        wait_until_idle()
+    # === 绘制最终能耗柱状图 ===
+    print("\nDrawing energy bar chart...")
     if energy_data:
         fig_width = min(max(8, len(energy_data) * 1.2), 24)
         plt.figure(figsize=(fig_width, 5))
