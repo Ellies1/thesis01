@@ -54,7 +54,7 @@ cd ~/spark-data-generator && \
 
 # 下载并配置 spark
 cd ~ && \
-  wget https://dlcdn.apache.org/spark/spark-3.4.4/spark-3.4.4-bin-hadoop3.tgz && \
+  wget https://archive.apache.org/dist/spark/spark-3.4.4/spark-3.4.4-bin-hadoop3.tgz && \
   tar xvf spark-3.4.4-bin-hadoop3.tgz && \
   rm spark-3.4.4-bin-hadoop3.tgz && \
   cp ~/spark-data-generator/docker/spark-conf/spark-defaults.conf ~/spark-3.4.4-bin-hadoop3/conf/

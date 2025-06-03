@@ -8,10 +8,32 @@ from vm_power_mapper import power_collector_with_vm, plot_vm_power_per_config
 
 # === 多组实验配置 ===
 experiment_configs = [
+    # Type 1: Strong Scaling
     {"name": "T1-1", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g"},
-    {"name": "T1-2", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 1, "mem": "4g"},
-    # {"name": "T1-3", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 2, "mem": "4g"},
-    # {"name": "T1-4", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "4g"},
+    {"name": "T1-2", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T1-3", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 4, "mem": "8g"},
+    {"name": "T1-4", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g"},
+
+    # Type 2: Fixed Resource, Increasing Problem Size
+    # {"name": "T2-1", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T2-1", "scale": 5, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T2-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+
+    # Type 3: Weak Scaling
+    {"name": "T3-1", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 2, "mem": "4g"},
+    {"name": "T3-2", "scale": 2, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "4g"},
+    {"name": "T3-3", "scale": 4, "query": "q3-v2.4", "instances": 4, "cores": 2, "mem": "4g"},
+
+    # Type 4: Fixed Total Load, Split Across Workers
+    {"name": "T4-1", "scale": 3, "query": "q3-v2.4", "instances": 1, "cores": 8, "mem": "16g"},
+    {"name": "T4-2", "scale": 3, "query": "q3-v2.4", "instances": 2, "cores": 4, "mem": "8g"},
+    {"name": "T4-3", "scale": 3, "query": "q3-v2.4", "instances": 4, "cores": 2, "mem": "4g"},
+
+    # Type 5: Query Horizontal Comparison
+    # {"name": "T1-1-q3", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T1-1-q5", "scale": 1, "query": "q5-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T1-1-q18", "scale": 1, "query": "q18-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T1-1-q64", "scale": 1, "query": "q64-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
 ]
 
 # === 路径与设置 ===
@@ -183,6 +205,7 @@ def main():
     energy_data = {}
 
     for exp in experiment_configs:
+        wait_until_idle()
         # === 提取实验参数 ===
         config_name = exp["name"]
         scale_factor = exp["scale"]
@@ -254,7 +277,6 @@ def main():
 
         # === 收集绘制 bar chart 所需数据 ===
         energy_data[config_name] = total_energy
-        wait_until_idle()
     # === 绘制最终能耗柱状图 ===
     print("\nDrawing energy bar chart...")
     if energy_data:
