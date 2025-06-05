@@ -33,7 +33,7 @@ def get_vm_cpu_utilization():
         print(f"[⚠️] Failed to get VM CPU stats: {e}")
     return result
 
-def plot_vm_power_per_config(phase_boundaries):
+def plot_vm_power_per_config(phase_boundaries, current_config):
     phase_colors = {
     "datagen": "blue",
     "metagen": "orange",
@@ -45,6 +45,7 @@ def plot_vm_power_per_config(phase_boundaries):
         return
 
     df = pd.read_csv(vm_file, names=["timestamp", "vm", "power", "config"])
+    df = df[df["config"] == current_config]
     grouped = df.groupby(["config", "vm"])
 
     # 按阶段区段绘图
@@ -61,33 +62,49 @@ def plot_vm_power_per_config(phase_boundaries):
             ts0 = start_times.get("datagen", t0) - t0
             ts1 = start_times.get("metagen", t0) - t0
             ts2 = start_times.get("query", t0) - t0
-
+            if ts0 == ts1 or ts1 == ts2:
+                print(f"[⚠️] Phase boundary for {conf} might be invalid: ts0={ts0}, ts1={ts1}, ts2={ts2}")
             df0 = group[group["timestamp"] < ts1]
             df1 = group[(group["timestamp"] >= ts1) & (group["timestamp"] < ts2)]
             df2 = group[group["timestamp"] >= ts2]
 
-            plt.plot(df0["timestamp"], df0["power"], color=phase_colors["datagen"], label="datagen")
-            if not df0.empty:
-                plt.text(df0["timestamp"].iloc[-1], df0["power"].iloc[-1], 
-                        f'{ts1 - ts0:.1f}s', fontsize=8, color=phase_colors["datagen"], va='bottom')
+            # plt.plot(df0["timestamp"], df0["power"], color=phase_colors["datagen"], label="datagen")
+            # if not df0.empty:
+            #     plt.text(df0["timestamp"].iloc[-1], df0["power"].iloc[-1], 
+            #             f'{ts1 - ts0:.1f}s', fontsize=8, color=phase_colors["datagen"], va='bottom')
 
-            plt.plot(df1["timestamp"], df1["power"], color=phase_colors["metagen"], label="metagen")
-            if not df1.empty:
-                plt.text(df1["timestamp"].iloc[-1], df1["power"].iloc[-1], 
-                        f'{ts2 - ts1:.1f}s', fontsize=8, color=phase_colors["metagen"], va='bottom')
+            # plt.plot(df1["timestamp"], df1["power"], color=phase_colors["metagen"], label="metagen")
+            # if not df1.empty:
+            #     plt.text(df1["timestamp"].iloc[-1], df1["power"].iloc[-1], 
+            #             f'{ts2 - ts1:.1f}s', fontsize=8, color=phase_colors["metagen"], va='bottom')
 
-            plt.plot(df2["timestamp"], df2["power"], color=phase_colors["query"], label="query")
-            if not df2.empty:
-                plt.text(df2["timestamp"].iloc[-1], df2["power"].iloc[-1], 
-                        f'{group["timestamp"].max() - ts2:.1f}s', fontsize=8, color=phase_colors["query"], va='bottom')
+            # plt.plot(df2["timestamp"], df2["power"], color=phase_colors["query"], label="query")
+            # if not df2.empty:
+            #     plt.text(df2["timestamp"].iloc[-1], df2["power"].iloc[-1], 
+            #             f'{group["timestamp"].max() - ts2:.1f}s', fontsize=8, color=phase_colors["query"], va='bottom')
+            plt.plot(df0["timestamp"], df0["power"], color=phase_colors["datagen"], label="Data Generation")
+            plt.plot(df1["timestamp"], df1["power"], color=phase_colors["metagen"], label="Table Creation")
+            plt.plot(df2["timestamp"], df2["power"], color=phase_colors["query"], label="Query Execution")
+            
+            duration_text = [
+                f"Data Generation ({ts1 - ts0:.1f}s)",
+                f"Table Creation ({ts2 - ts1:.1f}s)",
+                f"Query Execution ({group['timestamp'].max() - ts2:.1f}s)"
+            ]
+            for i, line in enumerate(duration_text):
+                plt.text(0.01, 0.02 + i * 0.06, line,
+                        fontsize=6,
+                        color='red',
+                        transform=plt.gca().transAxes,
+                        bbox=dict(facecolor='none', edgecolor='none', boxstyle='round,pad=0.3', alpha=0.8))
         else:
             plt.plot(group["timestamp"], group["power"])
-
+        plt.xlim(0, group["timestamp"].max() + 10)
         plt.xlabel("Time (s)")
         plt.ylabel("Estimated VM Power (W)")
         plt.title(f"Power Over Time - {vm} during {conf}")
         plt.grid(True)
-        plt.legend()
+        plt.legend(loc="lower center", bbox_to_anchor=(0.5, -0.3), ncol=3, fontsize=9)
         plt.tight_layout()
         plt.savefig(os.path.join(FIG_DIR, f"vm_power_over_time_{conf}_{vm}.png"))
         print(f"✅ Saved: vm_power_over_time_{conf}_{vm}.png")

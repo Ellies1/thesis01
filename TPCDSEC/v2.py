@@ -6,12 +6,36 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from vm_power_mapper import power_collector_with_vm, plot_vm_power_per_config
 
-# === 多组实验配置 ===
 experiment_configs = [
+    # Type 1: Strong Scaling
+    {"name": "T1-1", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g"},
+    {"name": "T1-2", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
     {"name": "T1-3", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 4, "mem": "8g"},
+    {"name": "T1-4", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g"},
+
+    # Type 2: Fixed Resource, Increasing Problem Size
+    # {"name": "T2-1", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T2-1", "scale": 5, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T2-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+
+    # Type 3: Weak Scaling
+    {"name": "T3-1", "scale": 1, "query": "q3-v2.4", "instances": 1, "cores": 2, "mem": "4g"},
+    {"name": "T3-2", "scale": 2, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "4g"},
+    {"name": "T3-3", "scale": 4, "query": "q3-v2.4", "instances": 4, "cores": 2, "mem": "4g"},
+
+    # Type 4: Fixed Total Load, Split Across Workers
+    {"name": "T4-1", "scale": 3, "query": "q3-v2.4", "instances": 1, "cores": 6, "mem": "12g"},
+    {"name": "T4-2", "scale": 3, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g"},
+    {"name": "T4-3", "scale": 3, "query": "q3-v2.4", "instances": 3, "cores": 2, "mem": "4g"},
+
+    # Type 5: Query Horizontal Comparison
+    # {"name": "T1-1-q3", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T1-1-q5", "scale": 1, "query": "q5-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T1-1-q18", "scale": 1, "query": "q18-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T1-1-q64", "scale": 1, "query": "q64-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
 ]
 
-# === 路径与设置 ===
+# === location and config ===
 RESULT_DIR = "result"
 FIG_DIR = os.path.join(RESULT_DIR, "finalpic")
 os.makedirs(RESULT_DIR, exist_ok=True)
@@ -25,7 +49,7 @@ vm_user = "cloud0_zsong"
 vm_ssh_key = "/home/zsong/.ssh/id_rsa_continuum"
 vm_data_dir = "/tpcds-data"
 
-# === Spark 提交命令基础 ===
+# === Spark submit commands ===
 spark_submit_base = [
     os.path.expanduser("~/continuum/spark-3.4.4-bin-hadoop3/bin/spark-submit"),
     "--class", "ParquetGenerator",
@@ -68,7 +92,7 @@ def run_spark_phase(phase_name, spark_cmd, config_label, phase_boundaries):
         print("[⚠️] Cannot read start energy, skipping...")
         return 0.0
 
-    # 标记阶段开始时间
+    # start time
     phase_start = time.time()
     stop_signal = threading.Event()
     collector_thread = threading.Thread(target=power_collector_with_vm, args=(stop_signal, config_label))
@@ -86,7 +110,7 @@ def run_spark_phase(phase_name, spark_cmd, config_label, phase_boundaries):
     collector_thread.join()
 
     phase_end = time.time()
-    phase_boundaries[config_label][phase_name] = phase_start  # 记录每轮每阶段开始时间（你也可以记录结束）
+    phase_boundaries[config_label][phase_name] = phase_start 
 
     end_energy = read_energy_uj()
     if end_energy is None:
@@ -130,9 +154,9 @@ def run(command, desc, exit_on_fail=True, shell=False):
     print(f"🔧 {desc}...")
     try:
         subprocess.run(command, check=True, shell=shell)
-        print(f"✅ {desc} 成功\n")
+        print(f"✅ {desc} succeed\n")
     except subprocess.CalledProcessError as e:
-        print(f"❌ {desc} 失败: {e}\n")
+        print(f"❌ {desc} failed: {e}\n")
         if exit_on_fail:
             exit(1)
 
@@ -181,13 +205,11 @@ def wait_until_idle():
 def main():
     ensure_scaphandre_qemu_running()
     ensure_scaphandre_prometheus_running()
-    cleanup_k8s_pods()  # 只清一次
-
+    cleanup_k8s_pods() 
     energy_data = {}
 
     for exp in experiment_configs:
         wait_until_idle()
-        # === 提取实验参数 ===
         config_name = exp["name"]
         scale_factor = exp["scale"]
         query_file = exp["query"]
@@ -195,11 +217,7 @@ def main():
         cores = exp["cores"]
         mem = exp["mem"]
         config_label = f"{config_name}"
-
-        # === 路径设置 ===
         dataset_dir = f"{vm_data_dir}/dataset_tpcds_{scale_factor}g"
-
-        # === 每轮清空旧数据 ===
         check_dataset_cmd = f'ssh {vm_user}@{vm_ip} -i {vm_ssh_key} "test -d {dataset_dir} && echo FOUND || echo NOT_FOUND"'
         check_output = subprocess.getoutput(check_dataset_cmd)
         if "FOUND" in check_output:
@@ -215,8 +233,6 @@ def main():
             f"sudo mkdir -p {vm_data_dir} && sudo chmod -R 777 {vm_data_dir}"
         ]
         run(mkdir_cmd, f"创建 VM 上的目录 {vm_data_dir}")
-
-        # === 构建 Spark 提交命令 ===
         spark_cmd_base = spark_submit_base.copy()
         spark_cmd_base += [
             "--conf", f"spark.executor.instances={instances}",
@@ -225,14 +241,14 @@ def main():
         ]
 
         jar_path = spark_submit_base[-1]  # "local:///opt/tpcds/parquet-data-generator_2.12-1.0.jar"
-        submit_prefix = spark_submit_base[:-1]  # 除去最后的 JAR
+        submit_prefix = spark_submit_base[:-1]  
         dynamic_confs = [
             "--conf", f"spark.executor.instances={instances}",
             "--conf", f"spark.executor.cores={cores}",
             "--conf", f"spark.executor.memory={mem}"
         ]
 
-        # 构造完整 spark-submit 命令
+
         datagen_args = ["datagen", vm_data_dir, "/opt/tpcds-kit/tools", str(scale_factor)]
         datagen_cmd = submit_prefix + dynamic_confs + [jar_path] + datagen_args
         metagen_args = ["metagen", vm_data_dir, str(scale_factor)]
@@ -240,27 +256,25 @@ def main():
         query_args = ["query", query_file, str(scale_factor)]
         query_cmd = submit_prefix + dynamic_confs + [jar_path] + query_args
 
-        # === 每轮运行任务并记录能耗 ===
-        total_energy = 0.0
-        phase_boundaries = {exp["name"]: {} for exp in experiment_configs}
 
-        # 每轮执行
+        total_energy = 0.0
+        # phase_boundaries = {exp["name"]: {} for exp in experiment_configs}
+        phase_boundaries = {config_label: {}}
+
         total_energy += run_spark_phase("datagen", datagen_cmd, config_label, phase_boundaries)
         total_energy += run_spark_phase("metagen", metagen_cmd, config_label, phase_boundaries)
         total_energy += run_spark_phase("query", query_cmd, config_label, phase_boundaries)
-        # === 每轮写入能耗数值文本 ===
+
         energy_out = os.path.join(RESULT_DIR, f"energy_{config_name}.txt")
         with open(energy_out, "w") as f:
             f.write(f"{total_energy:.6f}\n")
         print(f"✅ Total energy for {config_name}: {total_energy:.6f} J")
 
-        # === 每轮绘制 power-over-time 曲线图（函数内部已保存） ===
+ 
         print("\nDrawing power-over-time chart for:", config_label)
-        plot_vm_power_per_config(phase_boundaries)
-
-        # === 收集绘制 bar chart 所需数据 ===
+        plot_vm_power_per_config({config_label: phase_boundaries[config_label]}, config_label)
         energy_data[config_name] = total_energy
-    # === 绘制最终能耗柱状图 ===
+
     print("\nDrawing energy bar chart...")
     if energy_data:
         fig_width = min(max(8, len(energy_data) * 1.2), 24)
