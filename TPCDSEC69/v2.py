@@ -40,7 +40,7 @@ experiment_configs = [
 ]
 
 # === location and config ===
-RESULT_DIR = "result"
+RESULT_DIR = "result_3rd"
 FIG_DIR = os.path.join(RESULT_DIR, "finalpic")
 os.makedirs(RESULT_DIR, exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)
@@ -179,7 +179,26 @@ def cleanup_k8s_pods():
     except subprocess.CalledProcessError as e:
         print(f"[⚠️] Failed to clean up Kubernetes pods:\n{e.stderr.decode()}")
 
-def is_host_idle(threshold_idle=95.0, check_duration=5, interval=1):
+# def is_host_idle(threshold_idle=95.0, check_duration=5, interval=1):
+#     idle_counts = 0
+#     total_checks = check_duration // interval
+
+#     for _ in range(total_checks):
+#         try:
+#             output = subprocess.check_output("top -b -n 1 | grep '%Cpu(s)'", shell=True).decode()
+#             parts = output.split(",")
+#             for part in parts:
+#                 if "id" in part:
+#                     idle_str = part.strip().split()[0]
+#                     idle_val = float(idle_str)
+#                     if idle_val >= threshold_idle:
+#                         idle_counts += 1
+#         except Exception as e:
+#             print(f"Error checking CPU idle: {e}")
+#         time.sleep(interval)
+
+#     return idle_counts == total_checks
+def is_host_idle(threshold_idle=95.0, check_duration=5, interval=1, pass_ratio=0.8):
     idle_counts = 0
     total_checks = check_duration // interval
 
@@ -189,15 +208,17 @@ def is_host_idle(threshold_idle=95.0, check_duration=5, interval=1):
             parts = output.split(",")
             for part in parts:
                 if "id" in part:
-                    idle_str = part.strip().split()[0]
-                    idle_val = float(idle_str)
-                    if idle_val >= threshold_idle:
-                        idle_counts += 1
+                    try:
+                        idle_val = float(part.strip().split()[0])
+                        if idle_val >= threshold_idle:
+                            idle_counts += 1
+                    except:
+                        continue
         except Exception as e:
             print(f"Error checking CPU idle: {e}")
         time.sleep(interval)
 
-    return idle_counts == total_checks
+    return idle_counts >= int(total_checks * pass_ratio)
 
 def wait_until_idle():
     print("🕓 Checking if host is idle before next experiment...")
@@ -261,33 +282,55 @@ def main():
         query_cmd = submit_prefix + dynamic_confs + [jar_path] + query_args
 
 
-        total_energy = 0.0
-        # phase_boundaries = {exp["name"]: {} for exp in experiment_configs}
         phase_boundaries = {config_label: {}}
 
-        total_energy += run_spark_phase("datagen", datagen_cmd, config_label, phase_boundaries)
-        total_energy += run_spark_phase("metagen", metagen_cmd, config_label, phase_boundaries)
-        total_energy += run_spark_phase("query", query_cmd, config_label, phase_boundaries)
+        total_energy = 0.0
+        e_datagen = run_spark_phase("datagen", datagen_cmd, config_label, phase_boundaries)
+        e_metagen = run_spark_phase("metagen", metagen_cmd, config_label, phase_boundaries)
+        e_query = run_spark_phase("query", query_cmd, config_label, phase_boundaries)
+        total_energy = e_datagen + e_metagen + e_query
+
+        energy_data[config_name] = (e_datagen, e_metagen, e_query)
 
         energy_out = os.path.join(RESULT_DIR, f"energy_{config_name}.txt")
         with open(energy_out, "w") as f:
             f.write(f"{total_energy:.6f}\n")
+            f.write(f"{e_datagen:.6f}\n")
+            f.write(f"{e_metagen:.6f}\n")
+            f.write(f"{e_query:.6f}\n")
         print(f"✅ Total energy for {config_name}: {total_energy:.6f} J")
 
  
         print("\nDrawing power-over-time chart for:", config_label)
         plot_vm_power_per_config({config_label: phase_boundaries[config_label]}, config_label)
-        energy_data[config_name] = total_energy
+        # energy_data[config_name] = total_energy
 
     print("\nDrawing energy bar chart...")
     if energy_data:
         fig_width = min(max(8, len(energy_data) * 1.2), 24)
         plt.figure(figsize=(fig_width, 5))
-        plt.bar(energy_data.keys(), energy_data.values(), width=0.6)
+
+        labels = list(energy_data.keys())
+        e_dg = [energy_data[k][0] for k in labels]
+        e_mt = [energy_data[k][1] for k in labels]
+        e_qr = [energy_data[k][2] for k in labels]
+
+        plt.bar(labels, e_dg, label="Data Generation", color="blue")
+        plt.bar(labels, e_mt, bottom=e_dg, label="Table Creation", color="orange")
+        bottom_sum = [dg + mt for dg, mt in zip(e_dg, e_mt)]
+        plt.bar(labels, e_qr, bottom=bottom_sum, label="Query Execution", color="green")
+
+        for i, label in enumerate(labels):
+            plt.text(i, e_dg[i] / 2, f"{e_dg[i]:.2f}", ha='center', va='center', fontsize=8, color='white')
+            plt.text(i, e_dg[i] + e_mt[i] / 2, f"{e_mt[i]:.2f}", ha='center', va='center', fontsize=8, color='black')
+            plt.text(i, bottom_sum[i] + e_qr[i] / 2, f"{e_qr[i]:.2f}", ha='center', va='center', fontsize=6, color='black')
+            total = e_dg[i] + e_mt[i] + e_qr[i]
+            plt.text(i, total + 30, f"{total:.2f}", ha='center', va='bottom', fontsize=9, color='black')
         plt.ylabel("Energy (J)")
-        plt.title("Spark Configurations vs. Energy Consumption")
-        plt.grid(axis="y")
+        plt.title("Spark Configurations vs. Energy Consumption (Split by Phase)")
         plt.xticks(rotation=30, ha='right')
+        plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        plt.grid(axis="y")
         plt.tight_layout()
         plt.savefig(os.path.join(FIG_DIR, "energy_comparison.png"))
         print("✅ Energy bar chart saved: result/finalpic/energy_comparison.png")
