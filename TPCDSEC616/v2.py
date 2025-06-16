@@ -2,19 +2,22 @@ import subprocess
 import threading
 import time
 import os
-import time
-import re
 import matplotlib.pyplot as plt
 from datetime import datetime
 from vm_power_mapper import power_collector_with_vm, plot_vm_power_per_config
 
 experiment_configs = [
-    {"name": "T1-4", "scale": 1, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g"},
+    # Type 1: Strong Scaling
+    {"name": "T1-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g"},
+    {"name": "T1-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
+    {"name": "T1-3", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 4, "mem": "8g"},
+    {"name": "T1-4", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g"},
 
+   
 ]
 
 # === location and config ===
-RESULT_DIR = "result_3rd"
+RESULT_DIR = "result_4"
 FIG_DIR = os.path.join(RESULT_DIR, "finalpic")
 os.makedirs(RESULT_DIR, exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)
@@ -54,7 +57,6 @@ spark_submit_base = [
 ]
 
 
-
 def read_energy_uj():
     try:
         with open(ENERGY_FILE) as f:
@@ -64,69 +66,6 @@ def read_energy_uj():
         return None
 
 
-def collect_query_job_energy(energy_map, stop_event):
-    job_start_energy = {}
-
-    controller_user = "cloud_controller_zsong"
-    controller_ip = "192.168.166.2"
-    controller_ssh_key = "/home/zsong/.ssh/id_rsa_continuum"
-
-    get_log_cmd = (
-        f"ssh -i {controller_ssh_key} -o StrictHostKeyChecking=no "
-        f"{controller_user}@{controller_ip} "
-        f"\"kubectl get pod -n default -l spark-role=driver --sort-by=.metadata.creationTimestamp "
-        f"-o jsonpath='{{.items[-1].metadata.name}}'\""
-    )
-
-    try:
-        driver_pod_name = subprocess.check_output(get_log_cmd, shell=True).decode().strip()
-        print(f"[👀] Detected driver pod: {driver_pod_name}")
-    except subprocess.CalledProcessError as e:
-        print(f"[❌] Failed to get driver pod name:\n{e}")
-        return
-
-    stream_log_cmd = (
-        f"ssh -i {controller_ssh_key} -o StrictHostKeyChecking=no "
-        f"{controller_user}@{controller_ip} "
-        f"\"kubectl logs -f {driver_pod_name} -n default\""
-    )
-
-    try:
-        proc = subprocess.Popen(stream_log_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        while not stop_event.is_set():
-            line = proc.stdout.readline()
-            if not line:
-                break
-            line = line.decode(errors="ignore").strip()
-
-            m_start = re.search(r"Got job (\d+)", line)
-            if m_start:
-                job_id = m_start.group(1)
-                energy = read_energy_uj()
-                if energy is not None:
-                    job_start_energy[job_id] = energy
-                    print(f"[🔵] Job {job_id} start energy: {energy}")
-
-            m_end = re.search(r"Job (\d+) finished", line)
-            if m_end:
-                job_id = m_end.group(1)
-                if job_id in job_start_energy:
-                    energy_end = read_energy_uj()
-                    if energy_end is not None:
-                        delta = (energy_end - job_start_energy[job_id]) / 1e6
-                        energy_map[f"query_job_{job_id}"] = delta
-                        print(f"[🟢] Job {job_id} finished. Energy used: {delta:.3f} J")
-
-        proc.terminate()
-        proc.wait()
-
-    except Exception as e:
-        print(f"[⚠️] Failed to stream logs: {e}")
-
-
-
-
 def run_spark_phase(phase_name, spark_cmd, config_label, phase_boundaries):
     print(f"\n===== Running phase: {phase_name} =====")
     start_energy = read_energy_uj()
@@ -134,44 +73,25 @@ def run_spark_phase(phase_name, spark_cmd, config_label, phase_boundaries):
         print("[⚠️] Cannot read start energy, skipping...")
         return 0.0
 
+    # start time
     phase_start = time.time()
     stop_signal = threading.Event()
     collector_thread = threading.Thread(target=power_collector_with_vm, args=(stop_signal, config_label))
     collector_thread.start()
 
-    job_energy_map = {}
-    stop_log_signal = threading.Event()
-    log_thread = None
-
     try:
-        # ✅ 提交 Spark 任务
-        job_proc = subprocess.Popen(spark_cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-        # ✅ 等待几秒确保 pod 创建
-        if phase_name == "query":
-            time.sleep(5)
-            log_thread = threading.Thread(target=collect_query_job_energy, args=(job_energy_map, stop_log_signal))
-            log_thread.start()
-
-        # ✅ 等 Spark job 完成
-        job_proc.wait()
-
-    except Exception as e:
+        subprocess.run(spark_cmd, check=True)
+    except subprocess.CalledProcessError as e:
         print(f"[⚠️] Spark job failed: {e}")
         stop_signal.set()
-        stop_log_signal.set()
         collector_thread.join()
-        if log_thread:
-            log_thread.join()
         return 0.0
 
     stop_signal.set()
-    stop_log_signal.set()
     collector_thread.join()
-    if log_thread:
-        log_thread.join()
 
-    phase_boundaries[config_label][phase_name] = phase_start
+    phase_end = time.time()
+    phase_boundaries[config_label][phase_name] = phase_start 
 
     end_energy = read_energy_uj()
     if end_energy is None:
@@ -180,11 +100,6 @@ def run_spark_phase(phase_name, spark_cmd, config_label, phase_boundaries):
 
     delta = (end_energy - start_energy) / 1e6
     print(f"✅ Phase {phase_name} done. Energy: {delta:.3f} J")
-
-    if phase_name == "query":
-        for label, val in job_energy_map.items():
-            phase_boundaries[config_label][label] = val
-
     return delta
 
 
@@ -271,10 +186,33 @@ def wait_until_idle():
         time.sleep(10)
     print("✅ Host is idle. Proceeding...")
 
+
+
+def run_preparation_once(scale_factor=10):
+    print("\n🛠️ Running one-time data + table preparation...")
+    jar_path = spark_submit_base[-1]
+    submit_prefix = spark_submit_base[:-1]
+    dynamic_confs = ["--conf", "spark.executor.instances=2", "--conf", "spark.executor.cores=2", "--conf", "spark.executor.memory=6g"]
+
+    mkdir_cmd = [
+        "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
+        f"sudo mkdir -p {vm_data_dir} && sudo chmod -R 777 {vm_data_dir}"
+    ]
+    run(mkdir_cmd, f"Create directory on VM: {vm_data_dir}")
+
+    datagen_args = ["datagen", vm_data_dir, "/opt/tpcds-kit/tools", str(scale_factor)]
+    datagen_cmd = submit_prefix + dynamic_confs + [jar_path] + datagen_args
+    metagen_args = ["metagen", vm_data_dir, str(scale_factor)]
+    metagen_cmd = submit_prefix + dynamic_confs + [jar_path] + metagen_args
+
+    run_spark_phase("datagen", datagen_cmd, "initial", { "initial": {} })
+    run_spark_phase("metagen", metagen_cmd, "initial", { "initial": {} })
+
 def main():
     ensure_scaphandre_qemu_running()
     ensure_scaphandre_prometheus_running()
-    cleanup_k8s_pods() 
+    cleanup_k8s_pods()
+    # run_preparation_once(scale_factor=10)
     energy_data = {}
 
     for exp in experiment_configs:
@@ -286,51 +224,21 @@ def main():
         cores = exp["cores"]
         mem = exp["mem"]
         config_label = f"{config_name}"
-        dataset_dir = f"{vm_data_dir}/dataset_tpcds_{scale_factor}g"
-        check_dataset_cmd = f'ssh {vm_user}@{vm_ip} -i {vm_ssh_key} "test -d {dataset_dir} && echo FOUND || echo NOT_FOUND"'
-        check_output = subprocess.getoutput(check_dataset_cmd)
-        if "FOUND" in check_output:
-            print("⚠️ Old data detected, about to be cleaned up...\n")
-            cleanup_cmd = [
-                "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
-                f"sudo rm -rf {vm_data_dir}"
-            ]
-            run(cleanup_cmd, f"Delete the old directory {vm_data_dir}")
 
-        mkdir_cmd = [
-            "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
-            f"sudo mkdir -p {vm_data_dir} && sudo chmod -R 777 {vm_data_dir}"
-        ]
-        run(mkdir_cmd, f"Create a directory on the VM {vm_data_dir}")
-        spark_cmd_base = spark_submit_base.copy()
-        spark_cmd_base += [
-            "--conf", f"spark.executor.instances={instances}",
-            "--conf", f"spark.executor.cores={cores}",
-            "--conf", f"spark.executor.memory={mem}"
-        ]
-
-        jar_path = spark_submit_base[-1]  # "local:///opt/tpcds/parquet-data-generator_2.12-1.0.jar"
-        submit_prefix = spark_submit_base[:-1]  
+        jar_path = spark_submit_base[-1]
+        submit_prefix = spark_submit_base[:-1]
         dynamic_confs = [
             "--conf", f"spark.executor.instances={instances}",
             "--conf", f"spark.executor.cores={cores}",
             "--conf", f"spark.executor.memory={mem}"
         ]
-
-
-        datagen_args = ["datagen", vm_data_dir, "/opt/tpcds-kit/tools", str(scale_factor)]
-        datagen_cmd = submit_prefix + dynamic_confs + [jar_path] + datagen_args
-        metagen_args = ["metagen", vm_data_dir, str(scale_factor)]
-        metagen_cmd = submit_prefix + dynamic_confs + [jar_path] + metagen_args
         query_args = ["query", query_file, str(scale_factor)]
         query_cmd = submit_prefix + dynamic_confs + [jar_path] + query_args
 
-
         phase_boundaries = {config_label: {}}
 
-        total_energy = 0.0
-        e_datagen = run_spark_phase("datagen", datagen_cmd, config_label, phase_boundaries)
-        e_metagen = run_spark_phase("metagen", metagen_cmd, config_label, phase_boundaries)
+        e_datagen = 0.0
+        e_metagen = 0.0
         e_query = run_spark_phase("query", query_cmd, config_label, phase_boundaries)
         total_energy = e_datagen + e_metagen + e_query
 
@@ -342,12 +250,11 @@ def main():
             f.write(f"{e_datagen:.6f}\n")
             f.write(f"{e_metagen:.6f}\n")
             f.write(f"{e_query:.6f}\n")
+
         print(f"✅ Total energy for {config_name}: {total_energy:.6f} J")
 
- 
         print("\nDrawing power-over-time chart for:", config_label)
         plot_vm_power_per_config({config_label: phase_boundaries[config_label]}, config_label)
-        # energy_data[config_name] = total_energy
 
         print("\nDrawing energy bar chart...")
         if energy_data:
@@ -355,53 +262,23 @@ def main():
             plt.figure(figsize=(fig_width, 5))
 
             labels = list(energy_data.keys())
-            e_dg = [energy_data[k][0] for k in labels]
-            e_mt = [energy_data[k][1] for k in labels]
+            e_qr = [energy_data[k][2] for k in labels]
 
-            # 准备 query_job_X 堆叠部分
-            query_job_layers = []
-            max_jobs = 0
+            plt.bar(labels, e_qr, label="Query", color="green")
 
-            for k in labels:
-                job_keys = sorted([j for j in phase_boundaries[k] if j.startswith("query_job_")],
-                                key=lambda x: int(x.split("_")[-1]))
-                max_jobs = max(max_jobs, len(job_keys))
-                query_job_layers.append([phase_boundaries[k][j] for j in job_keys])
-
-            # 填充短的 config，使得每个 config 的 query_job_X 数量一致
-            for qj in query_job_layers:
-                while len(qj) < max_jobs:
-                    qj.append(0.0)
-
-            # 转置：从 per-config 转为 per-job-layer
-            stacked_query_jobs = list(zip(*query_job_layers))
-
-            # 画前两段
-            plt.bar(labels, e_dg, label="Data Generation", color="blue")
-            plt.bar(labels, e_mt, bottom=e_dg, label="Table Creation", color="orange")
-
-            bottom = [dg + mt for dg, mt in zip(e_dg, e_mt)]
-
-            # 按照 job_0, job_1... 叠加画
-            for idx, layer in enumerate(stacked_query_jobs):
-                plt.bar(labels, layer, bottom=bottom, label=f"Query Job {idx}", alpha=0.6)
-                bottom = [b + l for b, l in zip(bottom, layer)]
-
-            # 总能耗标注
             for i, label in enumerate(labels):
-                total = bottom[i]
-                plt.text(i, total + 30, f"{total:.2f}", ha='center', va='bottom', fontsize=9, color='black')
+                plt.text(i, e_qr[i] / 2, f"{e_qr[i]:.2f}", ha='center', va='center', fontsize=8, color='white')
 
             plt.ylabel("Energy (J)")
-            plt.title("Spark Configurations vs. Energy Consumption (Detailed Query Jobs)")
+            plt.title("Spark Configurations vs. Query Energy Consumption")
             plt.xticks(rotation=30, ha='right')
-            plt.legend(loc='center left', bbox_to_anchor=(1, 0.5))
             plt.grid(axis="y")
             plt.tight_layout()
             plt.savefig(os.path.join(FIG_DIR, "energy_comparison.png"))
             print("✅ Energy bar chart saved: result/finalpic/energy_comparison.png")
         else:
             print("⚠️ No energy data found, skipping energy comparison chart")
+
 
 if __name__ == "__main__":
     main()
