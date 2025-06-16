@@ -483,6 +483,13 @@ If you have questions, feel free to open an issue or ping me!
 6月16日，目前616版本实现了仅运行查询，并且同步更新了能耗图绘图以及折线图，以及现在可以指定query的重复次数，用repeat参数控制即可。
 同时 目前还做了eventlog的生成
 
+616是目前的最新版本
+1. 可以控制查询次数
+2. 只关注查询
+3. 最后的log文件会直接转移到/home/zsong/continuum/eventloglocal下，加了一个appname名字在json文件里来确保后续分得清是哪个实验的事件log
+4. 两款图都能正常记录
+5. 实验设计完整，可按需跑，数据集早已生成完整，不包含任何生成数据或者建表过程，仅查询。
+
 ## 9. Todo
 首先弄好完整的实验参数
 然后就是跑实验！！ 跑完了最后可以根据eventlog的duration去判断query的更加精确的能耗！

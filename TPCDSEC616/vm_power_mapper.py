@@ -156,7 +156,7 @@ import os
 import matplotlib.pyplot as plt
 import pandas as pd
 
-RESULT_DIR = "result_4"
+RESULT_DIR = "result_3"
 FIG_DIR = os.path.join(RESULT_DIR, "finalpic")
 os.makedirs(RESULT_DIR, exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)

@@ -8,12 +8,34 @@ from vm_power_mapper import power_collector_with_vm, plot_vm_power_per_config
 
 experiment_configs = [
     # Type 1: Strong Scaling
-    {"name": "T1-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g", "repeat": 10},
-    {"name": "T1-2", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g"},
+    {"name": "T1-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g", "repeat": 3},
+    {"name": "T1-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 3},
+    {"name": "T1-3", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 4, "mem": "8g", "repeat": 3},
+    {"name": "T1-4", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g", "repeat": 3},
+
+    # Type 2: Fixed Resource, Increasing Problem Size
+    {"name": "T2-1", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 6},
+    {"name": "T2-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 12},
+    {"name": "T2-3", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 18},
+    # Type 3: Weak Scaling
+    {"name": "T3-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 2, "mem": "4g", "repeat": 3},
+    {"name": "T3-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "4g", "repeat": 6},
+    {"name": "T3-3", "scale": 10, "query": "q3-v2.4", "instances": 4, "cores": 2, "mem": "4g", "repeat": 12},
+
+    # Type 4: Fixed Total Load, Split Across Workers
+    {"name": "T4-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 6, "mem": "12g", "repeat": 3},
+    {"name": "T4-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g", "repeat": 3},
+    {"name": "T4-3", "scale": 10, "query": "q3-v2.4", "instances": 3, "cores": 2, "mem": "4g", "repeat": 3},
+
+    # Type 5: Query Horizontal Comparison
+    {"name": "T5-q5",  "scale": 10, "query": "q5-v2.4",  "instances": 2, "cores": 2, "mem": "6g", "repeat": 3},
+    {"name": "T5-q18", "scale": 10, "query": "q18-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 3},
+    {"name": "T5-q64", "scale": 10, "query": "q64-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 3}
 ]
 
+
 # === location and config ===
-RESULT_DIR = "result_4"
+RESULT_DIR = "result_3"
 FIG_DIR = os.path.join(RESULT_DIR, "finalpic")
 os.makedirs(RESULT_DIR, exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)
@@ -47,7 +69,7 @@ spark_submit_base = [
     "--conf", "spark.sql.warehouse.dir=/tpcds-data/hive-warehouse",
     "--conf", "spark.eventLog.enabled=true",
     "--conf", "spark.eventLog.dir=file:///tpcds-data/eventlog",
-    "--conf", "spark.eventLog.compress=true",  # 可选项
+    "--conf", "spark.eventLog.compress=false", 
     "--conf", "spark.executor.memoryOverhead=2g",
     "--conf", "spark.driver.memory=4g",
     "--conf", "spark.driver.memoryOverhead=1g",
@@ -234,7 +256,8 @@ def main():
         dynamic_confs = [
             "--conf", f"spark.executor.instances={instances}",
             "--conf", f"spark.executor.cores={cores}",
-            "--conf", f"spark.executor.memory={mem}"
+            "--conf", f"spark.executor.memory={mem}",
+            "--conf", f"spark.app.name={config_label}"
         ]
         query_args = ["query", query_file, str(scale_factor), str(repeat)]
         query_cmd = submit_prefix + dynamic_confs + [jar_path] + query_args
@@ -282,6 +305,35 @@ def main():
             print("✅ Energy bar chart saved: result/finalpic/energy_comparison.png")
         else:
             print("⚠️ No energy data found, skipping energy comparison chart")
+    # === Move event logs from VM to local after all experiments ===
+    print("\n🚚 Moving event logs to local machine...")
+    local_dir = os.path.expanduser("~/continuum/eventloglocal")
+    os.makedirs(local_dir, exist_ok=True)
+
+    try:
+        tar_cmd = [
+            "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
+            "sudo tar czf /tpcds-data/eventlog.tar.gz -C /tpcds-data eventlog"
+        ]
+        run(tar_cmd, "Compressing event logs on VM", exit_on_fail=False)
+
+        scp_cmd = [
+            "scp", "-i", vm_ssh_key,
+            f"{vm_user}@{vm_ip}:/tpcds-data/eventlog.tar.gz",
+            local_dir
+        ]
+        run(scp_cmd, "Copying compressed event logs to local", exit_on_fail=False)
+
+        rm_cmd = [
+            "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
+            "sudo rm -rf /tpcds-data/eventlog /tpcds-data/eventlog.tar.gz"
+        ]
+        run(rm_cmd, "Removing event logs from VM", exit_on_fail=False)
+
+        print("✅ Event logs moved successfully.")
+    except Exception as e:
+        print(f"⚠️ Failed to move event logs: {e}")
+
 
 
 if __name__ == "__main__":
