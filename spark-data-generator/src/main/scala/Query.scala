@@ -1,9 +1,10 @@
 import org.apache.spark.sql.SparkSession
 import com.databricks.spark.sql.perf.tpcds.TPCDS
 
+
 object Query {
-  def run(queryName: String, spark: SparkSession, scaleFactor: String): Unit = {
-    
+  def run(queryName: String, spark: SparkSession, scaleFactor: String, repeat: Int = 1): Unit = {
+
     val sqlContext = spark.sqlContext
     val storagePath = "/tpcds-data"
     val databaseName = s"dataset_tpcds_${scaleFactor}g"
@@ -13,9 +14,10 @@ object Query {
 
     val tpcds = new TPCDS(sqlContext = sqlContext)
     val queryToRun = tpcds.tpcds2_4Queries.filter(q => q.name == queryName)
-    val allQueries = tpcds.tpcds2_4Queries
-    println(s"📋 当前可用的 query 名称有：")
-    allQueries.map(_.name).foreach(println)
-    tpcds.run(queryToRun)
+
+    for (i <- 1 to repeat) {
+      println(s"\n🔁 Running $queryName - iteration $i/$repeat")
+      tpcds.run(queryToRun)
+    }
   }
 }

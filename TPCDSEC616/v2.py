@@ -8,12 +8,8 @@ from vm_power_mapper import power_collector_with_vm, plot_vm_power_per_config
 
 experiment_configs = [
     # Type 1: Strong Scaling
-    {"name": "T1-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g"},
-    {"name": "T1-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g"},
-    {"name": "T1-3", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 4, "mem": "8g"},
-    {"name": "T1-4", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g"},
-
-   
+    {"name": "T1-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g", "repeat": 10},
+    {"name": "T1-2", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g"},
 ]
 
 # === location and config ===
@@ -36,7 +32,7 @@ spark_submit_base = [
     "--class", "ParquetGenerator",
     "--master", "k8s://https://192.168.166.2:6443",
     "--deploy-mode", "cluster",
-    "--conf", "spark.kubernetes.container.image=elliesgood00/tpcds-image:v16",
+    "--conf", "spark.kubernetes.container.image=elliesgood00/tpcds-image:v17",
     "--conf", "spark.kubernetes.authenticate.driver.serviceAccountName=spark",
     "--conf", "spark.kubernetes.executor.volumes.hostPath.tpcds.mount.path=/tpcds-data",
     "--conf", "spark.kubernetes.executor.volumes.hostPath.tpcds.options.path=/tpcds-data",
@@ -49,6 +45,9 @@ spark_submit_base = [
     "--conf", "spark.sql.catalogImplementation=hive",
     "--conf", "spark.hadoop.javax.jdo.option.ConnectionURL=jdbc:derby:;databaseName=/tpcds-data/metastore_db;create=true",
     "--conf", "spark.sql.warehouse.dir=/tpcds-data/hive-warehouse",
+    "--conf", "spark.eventLog.enabled=true",
+    "--conf", "spark.eventLog.dir=file:///tpcds-data/eventlog",
+    "--conf", "spark.eventLog.compress=true",  # 可选项
     "--conf", "spark.executor.memoryOverhead=2g",
     "--conf", "spark.driver.memory=4g",
     "--conf", "spark.driver.memoryOverhead=1g",
@@ -214,7 +213,11 @@ def main():
     cleanup_k8s_pods()
     # run_preparation_once(scale_factor=10)
     energy_data = {}
-
+    mkdir_cmd = [
+            "ssh", f"{vm_user}@{vm_ip}", "-i", vm_ssh_key,
+            f"sudo mkdir -p {vm_data_dir}/eventlog && sudo chmod -R 777 {vm_data_dir}"
+        ]
+    run(mkdir_cmd, f"Create a directory on the VM {vm_data_dir}")
     for exp in experiment_configs:
         wait_until_idle()
         config_name = exp["name"]
@@ -223,6 +226,7 @@ def main():
         instances = exp["instances"]
         cores = exp["cores"]
         mem = exp["mem"]
+        repeat = exp.get("repeat", 1)  # 默认1次
         config_label = f"{config_name}"
 
         jar_path = spark_submit_base[-1]
@@ -232,7 +236,7 @@ def main():
             "--conf", f"spark.executor.cores={cores}",
             "--conf", f"spark.executor.memory={mem}"
         ]
-        query_args = ["query", query_file, str(scale_factor)]
+        query_args = ["query", query_file, str(scale_factor), str(repeat)]
         query_cmd = submit_prefix + dynamic_confs + [jar_path] + query_args
 
         phase_boundaries = {config_label: {}}

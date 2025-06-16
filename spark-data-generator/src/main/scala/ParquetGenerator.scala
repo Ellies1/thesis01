@@ -27,7 +27,8 @@ object ParquetGenerator {
       case "query" =>
         val query = args(1)
         val scaleFactor = args(2)
-        Query.run(query, spark, scaleFactor)
+        val repeat = if (args.length > 3) args(3).toInt else 1
+        Query.run(query, spark, scaleFactor, repeat)
 
       case _ =>
         throw new IllegalArgumentException("Unknown mode: " + mode)

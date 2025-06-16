@@ -204,6 +204,17 @@ def plot_vm_power_per_config(phase_boundaries, current_config):
 
         plt.figure(figsize=(8, 4))
         plt.plot(group["timestamp"], group["power"], color=phase_colors["query"], label="Query Execution")
+        duration_text = [
+            f"Query Execution ({group['timestamp'].max():.1f}s)"
+        ]
+        for i, line in enumerate(duration_text):
+            plt.text(
+                0.01, 0.02 + i * 0.06, line,
+                fontsize=6,
+                color='red',
+                transform=plt.gca().transAxes,
+                bbox=dict(facecolor='none', edgecolor='none', boxstyle='round,pad=0.3', alpha=0.8)
+            )
         plt.xlim(0, group["timestamp"].max() + 10)
         plt.xlabel("Time (s)")
         plt.ylabel("Estimated VM Power (W)")

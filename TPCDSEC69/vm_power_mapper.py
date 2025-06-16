@@ -68,20 +68,6 @@ def plot_vm_power_per_config(phase_boundaries, current_config):
             df1 = group[(group["timestamp"] >= ts1) & (group["timestamp"] < ts2)]
             df2 = group[group["timestamp"] >= ts2]
 
-            # plt.plot(df0["timestamp"], df0["power"], color=phase_colors["datagen"], label="datagen")
-            # if not df0.empty:
-            #     plt.text(df0["timestamp"].iloc[-1], df0["power"].iloc[-1], 
-            #             f'{ts1 - ts0:.1f}s', fontsize=8, color=phase_colors["datagen"], va='bottom')
-
-            # plt.plot(df1["timestamp"], df1["power"], color=phase_colors["metagen"], label="metagen")
-            # if not df1.empty:
-            #     plt.text(df1["timestamp"].iloc[-1], df1["power"].iloc[-1], 
-            #             f'{ts2 - ts1:.1f}s', fontsize=8, color=phase_colors["metagen"], va='bottom')
-
-            # plt.plot(df2["timestamp"], df2["power"], color=phase_colors["query"], label="query")
-            # if not df2.empty:
-            #     plt.text(df2["timestamp"].iloc[-1], df2["power"].iloc[-1], 
-            #             f'{group["timestamp"].max() - ts2:.1f}s', fontsize=8, color=phase_colors["query"], va='bottom')
             plt.plot(df0["timestamp"], df0["power"], color=phase_colors["datagen"], label="Data Generation")
             plt.plot(df1["timestamp"], df1["power"], color=phase_colors["metagen"], label="Table Creation")
             plt.plot(df2["timestamp"], df2["power"], color=phase_colors["query"], label="Query Execution")

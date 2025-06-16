@@ -478,3 +478,11 @@ sudo pkill -f scaphandre
 This README walks through integrating Scaphandre with Continuum’s QEMU backend using virtiofsd for metric export. All modifications are lightweight and can be integrated via a simple config toggle and YAML injection.
 
 If you have questions, feel free to open an issue or ping me!
+
+## 8. 更新
+6月16日，目前616版本实现了仅运行查询，并且同步更新了能耗图绘图以及折线图，以及现在可以指定query的重复次数，用repeat参数控制即可。
+同时 目前还做了eventlog的生成
+
+## 9. Todo
+首先弄好完整的实验参数
+然后就是跑实验！！ 跑完了最后可以根据eventlog的duration去判断query的更加精确的能耗！
