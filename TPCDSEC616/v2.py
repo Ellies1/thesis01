@@ -8,10 +8,10 @@ from vm_power_mapper import power_collector_with_vm, plot_vm_power_per_config
 
 experiment_configs = [
     # Type 1: Strong Scaling
-    {"name": "T1-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g", "repeat": 3},
-    {"name": "T1-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 3},
-    {"name": "T1-3", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 4, "mem": "8g", "repeat": 3},
-    {"name": "T1-4", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g", "repeat": 3},
+    {"name": "T1-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g", "repeat": 1},
+    {"name": "T1-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 1},
+    {"name": "T1-3", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 4, "mem": "8g", "repeat": 1},
+    {"name": "T1-4", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g", "repeat": 1},
 
     # Type 2: Fixed Resource, Increasing Problem Size
     {"name": "T2-1", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 6},
@@ -23,19 +23,19 @@ experiment_configs = [
     {"name": "T3-3", "scale": 10, "query": "q3-v2.4", "instances": 4, "cores": 2, "mem": "4g", "repeat": 12},
 
     # Type 4: Fixed Total Load, Split Across Workers
-    {"name": "T4-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 6, "mem": "12g", "repeat": 3},
-    {"name": "T4-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g", "repeat": 3},
-    {"name": "T4-3", "scale": 10, "query": "q3-v2.4", "instances": 3, "cores": 2, "mem": "4g", "repeat": 3},
+    {"name": "T4-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 6, "mem": "12g", "repeat": 1},
+    {"name": "T4-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g", "repeat": 1},
+    {"name": "T4-3", "scale": 10, "query": "q3-v2.4", "instances": 3, "cores": 2, "mem": "4g", "repeat": 1},
 
     # Type 5: Query Horizontal Comparison
-    {"name": "T5-q5",  "scale": 10, "query": "q5-v2.4",  "instances": 2, "cores": 2, "mem": "6g", "repeat": 3},
-    {"name": "T5-q18", "scale": 10, "query": "q18-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 3},
-    {"name": "T5-q64", "scale": 10, "query": "q64-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 3}
+    {"name": "T5-q5",  "scale": 10, "query": "q5-v2.4",  "instances": 2, "cores": 2, "mem": "6g", "repeat": 1},
+    {"name": "T5-q18", "scale": 10, "query": "q18-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 1},
+    {"name": "T5-q64", "scale": 10, "query": "q64-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 1}
 ]
 
 
 # === location and config ===
-RESULT_DIR = "result_3"
+RESULT_DIR = "result_1"
 FIG_DIR = os.path.join(RESULT_DIR, "finalpic")
 os.makedirs(RESULT_DIR, exist_ok=True)
 os.makedirs(FIG_DIR, exist_ok=True)

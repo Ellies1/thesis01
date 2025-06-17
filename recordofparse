@@ -1,0 +1,637 @@
+zsong@node6:/home/zsong/continuum$ python3 parse_stage_times.py
+Found file: spark-bcb4646e68924f578abd74596d0c9201
+
+[Experiment: t2-3 from file: spark-bcb4646e68924f578abd74596d0c9201]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174582207   1750174592467   10260          map; mapPartitions; parallelize
+Other        5         1750174599293   1750174599757   464            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        10        1750174602315   1750174602613   298            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        15        1750174604753   1750174604858   105            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        20        1750174606619   1750174606705   86             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        25        1750174608678   1750174608775   97             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        30        1750174610517   1750174610625   108            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        35        1750174612392   1750174612503   111            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        40        1750174614290   1750174614390   100            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        45        1750174616161   1750174616257   96             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        50        1750174618005   1750174618094   89             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        55        1750174619765   1750174619830   65             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        60        1750174621425   1750174621520   95             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        65        1750174623077   1750174623167   90             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        70        1750174624798   1750174624890   92             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        75        1750174626493   1750174626581   88             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        80        1750174628044   1750174628121   77             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        85        1750174629675   1750174629753   78             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        90        1750174631275   1750174631354   79             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174594112   1750174596397   2285           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         2         1750174594126   1750174596351   2225           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         6         1750174601034   1750174601200   166            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         7         1750174601048   1750174601244   196            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         11        1750174603470   1750174603570   100            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         12        1750174603481   1750174603608   127            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         16        1750174605567   1750174605680   113            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         17        1750174605578   1750174605689   111            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         21        1750174607625   1750174607720   95             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         22        1750174607636   1750174607739   103            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         26        1750174609399   1750174609469   70             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         27        1750174609405   1750174609509   104            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         31        1750174611382   1750174611454   72             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         32        1750174611392   1750174611481   89             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         36        1750174613390   1750174613494   104            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         37        1750174613421   1750174613501   80             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         41        1750174615105   1750174615198   93             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         42        1750174615123   1750174615236   113            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         46        1750174616946   1750174617052   106            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         47        1750174616962   1750174617032   70             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         51        1750174618840   1750174618940   100            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         52        1750174618849   1750174618950   101            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         56        1750174620477   1750174620584   107            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         57        1750174620506   1750174620592   86             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         61        1750174622192   1750174622275   83             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         62        1750174622209   1750174622294   85             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         66        1750174623868   1750174623989   121            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         67        1750174623894   1750174624001   107            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         71        1750174625568   1750174625677   109            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         72        1750174625575   1750174625666   91             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         76        1750174627202   1750174627294   92             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         77        1750174627207   1750174627291   84             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         81        1750174628756   1750174628859   103            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         82        1750174628765   1750174628855   90             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         86        1750174630468   1750174630569   101            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         87        1750174630475   1750174630552   77             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750174596991   1750174598997   2006           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         8         1750174601442   1750174602246   804            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         13        1750174603853   1750174604688   835            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         18        1750174605861   1750174606551   690            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         23        1750174607902   1750174608572   670            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         28        1750174609710   1750174610458   748            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         33        1750174611607   1750174612269   662            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         38        1750174613642   1750174614200   558            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         43        1750174615487   1750174616096   609            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         48        1750174617206   1750174617874   668            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         53        1750174619058   1750174619715   657            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         58        1750174620780   1750174621361   581            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         63        1750174622421   1750174623013   592            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         68        1750174624120   1750174624723   603            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         73        1750174625773   1750174626426   653            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         78        1750174627403   1750174627994   591            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         83        1750174629037   1750174629608   571            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         88        1750174630680   1750174631225   545            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 12478 ms
+Scan        : 7959 ms
+Join        : 13043 ms
+
+[总能耗] 268.82 J
+
+[阶段能耗分配]
+Other       : 100.19 J
+Scan        : 63.90 J
+Join        : 104.73 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t2-3.png
+Found file: spark-c96d5a87338044dab343129e93bd8c5e
+
+[Experiment: t3-1 from file: spark-c96d5a87338044dab343129e93bd8c5e]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174670132   1750174686800   16668          map; mapPartitions; parallelize
+Other        5         1750174693797   1750174694224   427            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        10        1750174696858   1750174696987   129            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        15        1750174699482   1750174699587   105            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174688477   1750174690945   2468           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750174688489   1750174691003   2514           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         6         1750174695491   1750174695616   125            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         7         1750174695503   1750174695661   158            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         11        1750174697934   1750174698017   83             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         12        1750174697947   1750174698103   156            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750174691588   1750174693571   1983           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         8         1750174695817   1750174696781   964            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         13        1750174698353   1750174699381   1028           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 17329 ms
+Scan        : 5504 ms
+Join        : 3975 ms
+
+[总能耗] 141.79 J
+
+[阶段能耗分配]
+Other       : 91.65 J
+Scan        : 29.11 J
+Join        : 21.02 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t3-1.png
+Found file: spark-e3dd7f1a48494ba39439ddd2af2f0566
+
+[Experiment: t1-3 from file: spark-e3dd7f1a48494ba39439ddd2af2f0566]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174319308   1750174328692   9384           map; mapPartitions; parallelize
+Other        5         1750174335667   1750174335984   317            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174330223   1750174332526   2303           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750174330236   1750174332558   2322           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750174333342   1750174335378   2036           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 9701 ms
+Scan        : 4625 ms
+Join        : 2036 ms
+
+[总能耗] 119.93 J
+
+[阶段能耗分配]
+Other       : 71.11 J
+Scan        : 33.90 J
+Join        : 14.92 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t1-3.png
+Found file: spark-8b3eedc2791643f49338bb94f0d34bf3
+
+[Experiment: t3-3 from file: spark-8b3eedc2791643f49338bb94f0d34bf3]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174818145   1750174827128   8983           map; mapPartitions; parallelize
+Other        5         1750174835659   1750174836119   460            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        10        1750174838923   1750174839237   314            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        15        1750174841692   1750174842039   347            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        20        1750174844176   1750174844245   69             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        25        1750174846059   1750174846154   95             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        30        1750174848096   1750174848168   72             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        35        1750174850010   1750174850351   341            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        40        1750174852101   1750174852185   84             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        45        1750174853744   1750174853818   74             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        50        1750174855399   1750174855477   78             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        55        1750174856986   1750174857079   93             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        60        1750174858806   1750174858868   62             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174828495   1750174830841   2346           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         2         1750174828507   1750174830572   2065           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         6         1750174837502   1750174837651   149            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         7         1750174837514   1750174837725   211            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         11        1750174840268   1750174840393   125            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         12        1750174840287   1750174840471   184            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         16        1750174842981   1750174843105   124            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         17        1750174842995   1750174843153   158            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         21        1750174844967   1750174845121   154            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         22        1750174845009   1750174845190   181            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         26        1750174847061   1750174847218   157            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         27        1750174847083   1750174847217   134            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         31        1750174848940   1750174849156   216            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         32        1750174848968   1750174849154   186            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         36        1750174851132   1750174851273   141            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         37        1750174851152   1750174851316   164            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         41        1750174852957   1750174853077   120            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         42        1750174852969   1750174853086   117            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         46        1750174854414   1750174854552   138            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         47        1750174854428   1750174854553   125            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         51        1750174856168   1750174856306   138            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         52        1750174856188   1750174856314   126            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         56        1750174857817   1750174857904   87             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         57        1750174857831   1750174858020   189            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750174831389   1750174835469   4080           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         8         1750174837897   1750174838854   957            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         13        1750174840628   1750174841630   1002           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         18        1750174843310   1750174844114   804            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         23        1750174845341   1750174845996   655            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         28        1750174847357   1750174848044   687            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         33        1750174849290   1750174849940   650            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         38        1750174851437   1750174852053   616            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         43        1750174853174   1750174853699   525            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         48        1750174854689   1750174855318   629            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         53        1750174856390   1750174856932   542            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         58        1750174858115   1750174858760   645            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 11072 ms
+Scan        : 7735 ms
+Join        : 11792 ms
+
+[总能耗] 322.06 J
+
+[阶段能耗分配]
+Other       : 116.54 J
+Scan        : 81.41 J
+Join        : 124.11 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t3-3.png
+Found file: spark-4ce7e4dae7e44094ae7409d244699600
+
+[Experiment: t1-1 from file: spark-4ce7e4dae7e44094ae7409d244699600]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174171088   1750174202747   31659          map; mapPartitions; parallelize
+Other        5         1750174209709   1750174210164   455            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174204269   1750174206128   1859           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750174204283   1750174206336   2053           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750174206821   1750174209368   2547           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 32114 ms
+Scan        : 3912 ms
+Join        : 2547 ms
+
+[总能耗] 123.76 J
+
+[阶段能耗分配]
+Other       : 103.03 J
+Scan        : 12.55 J
+Join        : 8.17 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t1-1.png
+Found file: spark-5febb80461624b29af8206a34873c3fa
+
+[Experiment: t1-4 from file: spark-5febb80461624b29af8206a34873c3fa]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174372762   1750174380850   8088           map; mapPartitions; parallelize
+Other        5         1750174386649   1750174386953   304            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174381933   1750174384040   2107           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         2         1750174381943   1750174384049   2106           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Join         3         1750174384656   1750174386458   1802           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 8392 ms
+Scan        : 4213 ms
+Join        : 1802 ms
+
+[总能耗] 144.48 J
+
+[阶段能耗分配]
+Other       : 84.16 J
+Scan        : 42.25 J
+Join        : 18.07 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t1-4.png
+Found file: spark-660a2a9c9047432fae0326dadf2ad69b
+
+[Experiment: t2-2 from file: spark-660a2a9c9047432fae0326dadf2ad69b]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174507358   1750174516649   9291           map; mapPartitions; parallelize
+Other        5         1750174523224   1750174523609   385            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        10        1750174526151   1750174526329   178            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        15        1750174528247   1750174528442   195            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        20        1750174530517   1750174530601   84             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        25        1750174532568   1750174532668   100            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        30        1750174534534   1750174534630   96             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        35        1750174536449   1750174536543   94             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        40        1750174538124   1750174538308   184            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        45        1750174539940   1750174540015   75             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        50        1750174541691   1750174542027   336            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        55        1750174543600   1750174543676   76             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        60        1750174545386   1750174545537   151            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174518009   1750174520452   2443           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         2         1750174518036   1750174520463   2427           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         6         1750174524818   1750174524977   159            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         7         1750174524831   1750174525046   215            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         11        1750174527204   1750174527320   116            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         12        1750174527213   1750174527301   88             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         16        1750174529314   1750174529429   115            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         17        1750174529326   1750174529450   124            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         21        1750174531484   1750174531595   111            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         22        1750174531532   1750174531670   138            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         26        1750174533536   1750174533670   134            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         27        1750174533543   1750174533632   89             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         31        1750174535381   1750174535462   81             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         32        1750174535399   1750174535507   108            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         36        1750174537260   1750174537345   85             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         37        1750174537269   1750174537351   82             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         41        1750174539082   1750174539159   77             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         42        1750174539090   1750174539197   107            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         46        1750174540756   1750174540818   62             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         47        1750174540767   1750174540852   85             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         51        1750174542596   1750174542755   159            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         52        1750174542604   1750174542675   71             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         56        1750174544363   1750174544486   123            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         57        1750174544379   1750174544512   133            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Join         3         1750174521076   1750174522918   1842           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         8         1750174525200   1750174526075   875            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         13        1750174527477   1750174528186   709            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         18        1750174529633   1750174530396   763            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         23        1750174531798   1750174532494   696            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         28        1750174533818   1750174534482   664            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         33        1750174535679   1750174536364   685            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         38        1750174537471   1750174538034   563            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         43        1750174539300   1750174539886   586            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         48        1750174540968   1750174541582   614            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         53        1750174542945   1750174543519   574            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         58        1750174544605   1750174545333   728            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 11245 ms
+Scan        : 7332 ms
+Join        : 9299 ms
+
+[总能耗] 237.22 J
+
+[阶段能耗分配]
+Other       : 95.69 J
+Scan        : 62.39 J
+Join        : 79.13 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t2-2.png
+Found file: spark-804d3664daa74a4980a676fbdb1e9980
+
+[Experiment: t1-2 from file: spark-804d3664daa74a4980a676fbdb1e9980]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174264411   1750174274153   9742           map; mapPartitions; parallelize
+Other        5         1750174280878   1750174281254   376            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174275747   1750174278072   2325           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         2         1750174275770   1750174278031   2261           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Join         3         1750174278759   1750174280672   1913           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 10118 ms
+Scan        : 4586 ms
+Join        : 1913 ms
+
+[总能耗] 155.60 J
+
+[阶段能耗分配]
+Other       : 94.75 J
+Scan        : 42.94 J
+Join        : 17.91 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t1-2.png
+Found file: picforno1
+Found file: spark-252510ec4c4b40a19a0b23a2db19f98c
+
+[Experiment: t4-1 from file: spark-252510ec4c4b40a19a0b23a2db19f98c]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174895572   1750174903071   7499           map; mapPartitions; parallelize
+Other        5         1750174908797   1750174909162   365            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174904423   1750174906185   1762           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750174904449   1750174906169   1720           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750174906796   1750174908518   1722           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 7864 ms
+Scan        : 3482 ms
+Join        : 1722 ms
+
+[总能耗] 125.15 J
+
+[阶段能耗分配]
+Other       : 75.31 J
+Scan        : 33.35 J
+Join        : 16.49 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t4-1.png
+Found file: spark-951955b7f7c44a71b71604309329b306
+
+[Experiment: t4-3 from file: spark-951955b7f7c44a71b71604309329b306]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750175001272   1750175009986   8714           map; mapPartitions; parallelize
+Other        5         1750175016654   1750175017024   370            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750175011301   1750175013418   2117           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750175011335   1750175013410   2075           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750175014065   1750175016364   2299           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 9084 ms
+Scan        : 4192 ms
+Join        : 2299 ms
+
+[总能耗] 176.00 J
+
+[阶段能耗分配]
+Other       : 102.65 J
+Scan        : 47.37 J
+Join        : 25.98 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t4-3.png
+Found file: spark-f7c6b38af05e4437a61f276184d59beb
+
+[Experiment: t4-2 from file: spark-f7c6b38af05e4437a61f276184d59beb]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174948515   1750174956666   8151           map; mapPartitions; parallelize
+Other        5         1750174962586   1750174962968   382            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174958022   1750174960192   2170           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750174958042   1750174960136   2094           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750174960657   1750174962374   1717           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 8533 ms
+Scan        : 4264 ms
+Join        : 1717 ms
+
+[总能耗] 158.07 J
+
+[阶段能耗分配]
+Other       : 92.93 J
+Scan        : 46.44 J
+Join        : 18.70 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t4-2.png
+Found file: spark-5e668cd920984138b1bffe1bb58716b7
+
+[Experiment: t5-q18 from file: spark-5e668cd920984138b1bffe1bb58716b7]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750175157118   1750175166908   9790           map; mapPartitions; parallelize
+Other        9         1750175178101   1750175178920   819            AQEShuffleRead; WholeStageCodegen (8); mapPartitionsInternal; takeOrdered
+Scan         1         1750175168229   1750175170698   2469           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (6)
+Scan         2         1750175168245   1750175171124   2879           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.customer; WholeStageCodegen (2)
+Scan         3         1750175168263   1750175170824   2561           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.customer_demographics; WholeStageCodegen (1)
+Scan         4         1750175168278   1750175171681   3403           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.customer_demographics; WholeStageCodegen (3)
+Scan         5         1750175168287   1750175170893   2606           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (5)
+Scan         6         1750175168299   1750175171081   2782           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.customer_address; WholeStageCodegen (4)
+Scan         7         1750175174245   1750175177848   3603           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.catalog_sales; WholeStageCodegen (7)
+
+[阶段耗时统计]
+Other       : 10609 ms
+Scan        : 20303 ms
+
+[总能耗] 197.73 J
+
+[阶段能耗分配]
+Other       : 67.86 J
+Scan        : 129.87 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t5-q18.png
+Found file: spark-0934776977d145a5aff50206f4d0f1d4
+
+[Experiment: t5-q64 from file: spark-0934776977d145a5aff50206f4d0f1d4]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750175221237   1750175231062   9825           map; mapPartitions; parallelize
+Other        22        1750175270711   1750175283029   12318          AQEShuffleRead; Exchange; WholeStageCodegen (39); WholeStageCodegen (40); WholeStageCodegen (41)
+Other        25        1750175273892   1750175290596   16704          AQEShuffleRead; Exchange; WholeStageCodegen (42); WholeStageCodegen (43); WholeStageCodegen (44)
+Other        27        1750175276542   1750175294925   18383          AQEShuffleRead; Exchange; WholeStageCodegen (48); WholeStageCodegen (49); WholeStageCodegen (50)
+Other        31        1750175290846   1750175293040   2194           AQEShuffleRead; BroadcastExchange; WholeStageCodegen (51)
+Other        34        1750175293984   1750175295811   1827           AQEShuffleRead; Exchange; WholeStageCodegen (53)
+Other        37        1750175295538   1750175296640   1102           AQEShuffleRead; Exchange; WholeStageCodegen (54)
+Other        41        1750175295915   1750175296572   657            AQEShuffleRead; BroadcastExchange
+Other        46        1750175296791   1750175296959   168            AQEShuffleRead; WholeStageCodegen (55); mapPartitionsInternal; takeOrdered
+Scan         1         1750175233730   1750175235889   2159           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.household_demographics; WholeStageCodegen (13)
+Scan         2         1750175233751   1750175235861   2110           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.income_band; WholeStageCodegen (17)
+Scan         3         1750175233764   1750175235718   1954           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (5)
+Scan         4         1750175233775   1750175235912   2137           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (19)
+Scan         5         1750175233881   1750175235929   2048           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.store; WholeStageCodegen (6)
+Scan         6         1750175233900   1750175236328   2428           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (24)
+Scan         7         1750175233930   1750175237264   3334           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.customer; WholeStageCodegen (7)
+Scan         8         1750175233963   1750175237365   3402           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.customer_demographics; WholeStageCodegen (10)
+Scan         9         1750175233986   1750175236564   2578           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (8)
+Scan         10        1750175234102   1750175237267   3165           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.customer_address; WholeStageCodegen (15)
+Scan         11        1750175234122   1750175236904   2782           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.promotion; WholeStageCodegen (12)
+Scan         13        1750175240973   1750175248944   7971           Scan parquet spark_catalog.dataset_tpcds_10g.store_returns
+Scan         14        1750175249088   1750175253616   4528           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_returns; WholeStageCodegen (2)
+Scan         15        1750175250113   1750175258947   8834           Scan parquet spark_catalog.dataset_tpcds_10g.catalog_sales
+Scan         16        1750175259044   1750175263960   4916           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.catalog_sales; WholeStageCodegen (3)
+Scan         17        1750175260295   1750175269707   9412           Scan parquet spark_catalog.dataset_tpcds_10g.catalog_returns
+Scan         18        1750175269840   1750175273353   3513           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.catalog_returns; WholeStageCodegen (4)
+Join         12        1750175236661   1750175241198   4537           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (1)
+Join         19        1750175270087   1750175276265   6178           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (20)
+
+[阶段耗时统计]
+Other       : 63178 ms
+Scan        : 67271 ms
+Join        : 10715 ms
+
+[总能耗] 487.18 J
+
+[阶段能耗分配]
+Other       : 218.04 J
+Scan        : 232.16 J
+Join        : 36.98 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t5-q64.png
+Found file: spark-c37ea2d275db4a00a29f18559e58c169
+
+[Experiment: t5-q5 from file: spark-c37ea2d275db4a00a29f18559e58c169]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750175055040   1750175064658   9618           map; mapPartitions; parallelize
+Other        1         1750175066147   1750175072822   6675           map; mapPartitions; parallelize
+Other        2         1750175074177   1750175079713   5536           map; mapPartitions; parallelize
+Other        3         1750175080938   1750175086832   5894           map; mapPartitions; parallelize
+Other        4         1750175087952   1750175093904   5952           map; mapPartitions; parallelize
+Other        5         1750175095227   1750175101439   6212           map; mapPartitions; parallelize
+Other        15        1750175108443   1750175113670   5227           AQEShuffleRead; BroadcastExchange
+Other        22        1750175117105   1750175117527   422            AQEShuffleRead; Exchange; Union; WholeStageCodegen (18); WholeStageCodegen (19); WholeStageCodegen (20); WholeStageCodegen (21)
+Other        28        1750175117703   1750175117881   178            AQEShuffleRead; WholeStageCodegen (22); mapPartitionsInternal; takeOrdered
+Scan         6         1750175103163   1750175105578   2415           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.web_site; WholeStageCodegen (8)
+Scan         7         1750175103181   1750175105608   2427           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.catalog_page; WholeStageCodegen (4)
+Scan         8         1750175103193   1750175105703   2510           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         9         1750175103206   1750175105688   2482           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.store; WholeStageCodegen (2)
+Scan         10        1750175106073   1750175107040   967            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.web_returns; WholeStageCodegen (5)
+Scan         11        1750175106626   1750175112297   5671           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.web_sales; WholeStageCodegen (6)
+Scan         13        1750175108125   1750175113538   5413           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.catalog_returns; Scan parquet spark_catalog.dataset_tpcds_10g.catalog_sales; Union; WholeStageCodegen (12); WholeStageCodegen (13); WholeStageCodegen (14)
+Scan         17        1750175114142   1750175116718   2576           AQEShuffleRead; Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.web_sales; Union; WholeStageCodegen (15); WholeStageCodegen (16); WholeStageCodegen (17)
+Join         12        1750175107627   1750175113002   5375           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_returns; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; Union; WholeStageCodegen (10); WholeStageCodegen (11); WholeStageCodegen (9)
+
+[阶段耗时统计]
+Other       : 45714 ms
+Scan        : 24461 ms
+Join        : 5375 ms
+
+[总能耗] 402.14 J
+
+[阶段能耗分配]
+Other       : 243.33 J
+Scan        : 130.20 J
+Join        : 28.61 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t5-q5.png
+Found file: spark-f20d03799e0e4afcb94d923118b3917e
+
+[Experiment: t3-2 from file: spark-f20d03799e0e4afcb94d923118b3917e]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174752216   1750174762110   9894           map; mapPartitions; parallelize
+Other        5         1750174769044   1750174769474   430            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        10        1750174771812   1750174771907   95             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        15        1750174774010   1750174774083   73             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        20        1750174775750   1750174775942   192            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        25        1750174778042   1750174778372   330            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        30        1750174780247   1750174780334   87             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174763603   1750174766119   2516           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750174763642   1750174766116   2474           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         6         1750174770623   1750174770761   138            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         7         1750174770674   1750174770845   171            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         11        1750174772917   1750174773109   192            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         12        1750174772931   1750174773034   103            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         16        1750174774809   1750174774875   66             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         17        1750174774859   1750174774930   71             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         21        1750174776818   1750174776943   125            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         22        1750174776826   1750174776942   116            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         26        1750174779234   1750174779333   99             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         27        1750174779256   1750174779376   120            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Join         3         1750174766795   1750174768854   2059           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         8         1750174770973   1750174771682   709            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         13        1750174773246   1750174773940   694            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         18        1750174775041   1750174775657   616            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         23        1750174777086   1750174777892   806            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         28        1750174779497   1750174780195   698            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 11101 ms
+Scan        : 6191 ms
+Join        : 5582 ms
+
+[总能耗] 207.08 J
+
+[阶段能耗分配]
+Other       : 100.50 J
+Scan        : 56.05 J
+Join        : 50.53 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t3-2.png
+Found file: spark-62cafaa033034256b3a3e6b312ee2284
+
+[Experiment: t2-1 from file: spark-62cafaa033034256b3a3e6b312ee2284]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174441927   1750174451459   9532           map; mapPartitions; parallelize
+Other        5         1750174457563   1750174457866   303            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        10        1750174460380   1750174460516   136            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        15        1750174462624   1750174462718   94             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        20        1750174464835   1750174464916   81             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        25        1750174466699   1750174466851   152            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Other        30        1750174468604   1750174468669   65             AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174452739   1750174454866   2127           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750174452751   1750174454735   1984           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         6         1750174458969   1750174459158   189            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         7         1750174458976   1750174459160   184            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         11        1750174461466   1750174461626   160            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         12        1750174461483   1750174461600   117            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         16        1750174463595   1750174463680   85             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         17        1750174463614   1750174463760   146            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         21        1750174465736   1750174465849   113            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         22        1750174465746   1750174465823   77             BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         26        1750174467584   1750174467691   107            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Scan         27        1750174467595   1750174467710   115            BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Join         3         1750174455528   1750174457355   1827           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         8         1750174459342   1750174460240   898            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         13        1750174461873   1750174462559   686            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         18        1750174463946   1750174464738   792            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         23        1750174465963   1750174466637   674            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+Join         28        1750174467847   1750174468549   702            Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 10363 ms
+Scan        : 5404 ms
+Join        : 5579 ms
+
+[总能耗] 198.61 J
+
+[阶段能耗分配]
+Other       : 96.42 J
+Scan        : 50.28 J
+Join        : 51.91 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t2-1.png
+Found file: spark-44b5ed6555b54b6e87dc8cae54dbf8bf
+
+[Experiment: t1-1 from file: spark-44b5ed6555b54b6e87dc8cae54dbf8bf]
+Phase        Stage ID  Start           End             Duration(ms)   Operation
+------------------------------------------------------------------------------------------
+Other        0         1750174060361   1750174090888   30527          map; mapPartitions; parallelize
+Other        5         1750174097916   1750174098303   387            AQEShuffleRead; WholeStageCodegen (4); mapPartitionsInternal; takeOrdered
+Scan         1         1750174092345   1750174094302   1957           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.date_dim; WholeStageCodegen (1)
+Scan         2         1750174092374   1750174094555   2181           BroadcastExchange; Scan parquet spark_catalog.dataset_tpcds_10g.item; WholeStageCodegen (2)
+Join         3         1750174095195   1750174097735   2540           Exchange; Scan parquet spark_catalog.dataset_tpcds_10g.store_sales; WholeStageCodegen (3)
+
+[阶段耗时统计]
+Other       : 30914 ms
+Scan        : 4138 ms
+Join        : 2540 ms
+
+[总能耗] 123.76 J
+
+[阶段能耗分配]
+Other       : 101.77 J
+Scan        : 13.62 J
+Join        : 8.36 J
+[✅] 能耗柱状图已保存：/home/zsong/continuum/eventloglocal/logs01/eventlog/picforno1/phase_energy_t1-1.png
+
+

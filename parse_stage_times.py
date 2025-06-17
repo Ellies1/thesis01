@@ -106,7 +106,7 @@ def read_total_energy(exp_name):
 
     # 构造符合 energy_Tx-xxx.txt 的格式
     energy_name = f"T{exp_name[1:]}"
-    energy_path = f"/home/zsong/continuum/TPCDSEC616/result_1/energy_{energy_name}.txt"
+    energy_path = f"/home/zsong/continuum/TPCDSEC616/result_3/energy_{energy_name}.txt"
 
     if not os.path.exists(energy_path):
         print(f"[⚠️] 能耗文件不存在: {energy_path}")
@@ -179,7 +179,7 @@ def process_log(log_path, output_dir):
 
 
 if __name__ == "__main__":
-    log_dir = "/home/zsong/continuum/eventloglocal/eventlog"
+    log_dir = "/home/zsong/continuum/eventloglocal/logs03/eventlog"
     output_dir = os.path.join(log_dir, "picforno1")
     os.makedirs(output_dir, exist_ok=True)
 
@@ -192,39 +192,3 @@ if __name__ == "__main__":
             process_log(fpath, output_dir)
         except Exception as e:
             print(f"[❌] 处理文件失败: {fpath}, 错误: {e}")
-
-
-# # 主入口
-# if __name__ == "__main__":
-#     log_path = "/home/zsong/continuum/eventloglocal/eventlog/spark-407d810f02a64908b622eae23032d8e7"
-#     exp_name, grouped = parse_and_group_stages(log_path)
-
-#     if exp_name:
-#         print(f"[Experiment: {exp_name}]\n")
-
-#     print(f"{'Phase':<12} {'Stage ID':<9} {'Start':<15} {'End':<15} {'Duration(ms)':<14} Operation")
-#     print("-" * 90)
-#     for phase in grouped:
-#         for (start, end, duration, sid, detail) in grouped[phase]:
-#             print(f"{phase:<12} {sid:<9} {start:<15} {end:<15} {duration:<14} {detail}")
-
-#     # 1. 各阶段总耗时
-#     total_durations = {phase: sum(r[2] for r in grouped[phase]) for phase in grouped}
-#     print("\n[阶段耗时统计]")
-#     for phase, dur in total_durations.items():
-#         print(f"{phase:<12}: {dur} ms")
-
-#     # 2. 能耗读取
-#     total_energy = read_total_energy(exp_name)
-#     if total_energy is not None:
-#         print(f"\n[总能耗] {total_energy:.2f} J")
-
-#         # 3. 分配能耗
-#         energy_by_phase = split_energy_by_duration(total_energy, total_durations)
-#         print("\n[阶段能耗分配]")
-#         for phase, energy in energy_by_phase.items():
-#             print(f"{phase:<12}: {energy:.2f} J")
-
-#         # 4. 绘图
-#         draw_energy_bar(energy_by_phase, output_path=f"phase_energy_{exp_name}.png")
-
