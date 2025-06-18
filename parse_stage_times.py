@@ -4,29 +4,38 @@ import re
 import os
 import matplotlib.pyplot as plt
 
-# 分类函数
+
 def classify_stage(name):
     name_lower = name.lower()
-    if "join" in name_lower:
+
+    if "store_sales" in name_lower and "exchange" in name_lower:
         return "Join"
-    elif "exchange" in name_lower and "scan" in name_lower:
-        if "store_sales" in name_lower:
-            return "Join"
-        else:
-            return "Scan"
-    elif "scan" in name_lower:
+
+    if "createtable" in name_lower or "insert" in name_lower or "save" in name_lower or "output" in name_lower:
+        return "Write"
+
+    if "scan" in name_lower:
         return "Scan"
-    elif any(keyword in name_lower for keyword in [
+
+    if any(keyword in name_lower for keyword in [
         "aggregate", "hashaggregate", "sortaggregate",
         "objecthashaggregate", "partialaggregate", "finalaggregate"
     ]):
         return "Aggregate"
-    elif any(keyword in name_lower for keyword in [
-        "write", "save", "insert", "output", "datasink", "createtable"
-    ]):
-        return "Write"
-    else:
-        return "Other"
+
+    if "parallelize" in name_lower or "map;" in name_lower:
+        return "Init(Map & Parallelize)"
+
+    if "takeordered" in name_lower:
+        return "TakeOrdered"
+
+    if "union" in name_lower:
+        return "Union"
+
+    if "exchange" in name_lower:
+        return "Exchange(shuffle/aggregate)"
+
+    return "Other"
 
 # 提取语义名
 def extract_semantic_stage_name(stage_info):
@@ -106,7 +115,7 @@ def read_total_energy(exp_name):
 
     # 构造符合 energy_Tx-xxx.txt 的格式
     energy_name = f"T{exp_name[1:]}"
-    energy_path = f"/home/zsong/continuum/TPCDSEC616/result_3/energy_{energy_name}.txt"
+    energy_path = f"/home/zsong/continuum/TPCDSEC616/result_1/energy_{energy_name}.txt"
 
     if not os.path.exists(energy_path):
         print(f"[⚠️] 能耗文件不存在: {energy_path}")
@@ -128,16 +137,19 @@ def split_energy_by_duration(total_energy, total_durations):
         energy_per_phase[phase] = total_energy * (dur / total_time) if total_time > 0 else 0
     return energy_per_phase
 
-def draw_energy_bar(energy_per_phase, output_path="phase_energy.png"):
+def draw_energy_bar(energy_per_phase, output_path="phase_energy.png", exp_name=None):
     import matplotlib.pyplot as plt
 
     phases = list(energy_per_phase.keys())
     values = [energy_per_phase[p] for p in phases]
 
-    plt.figure(figsize=(8, 5))
+    plt.figure(figsize=(10, 5))
     bars = plt.bar(phases, values, color="green")  # 设置颜色为绿色
     plt.ylabel("Energy (Joules)")
-    plt.title("Energy Usage by Phase")
+    if exp_name:
+        plt.title(f"Energy Usage by Phase ({exp_name.upper()})")
+    else:
+        plt.title("Energy Usage by Phase")
     plt.grid(axis='y')
 
     # 在柱子上添加具体的能耗数值
@@ -175,11 +187,16 @@ def process_log(log_path, output_dir):
         print("\n[阶段能耗分配]")
         for phase, energy in energy_by_phase.items():
             print(f"{phase:<12}: {energy:.2f} J")
-        draw_energy_bar(energy_by_phase, output_path=os.path.join(output_dir, f"phase_energy_{exp_name}.png"))
+        draw_energy_bar(
+            energy_by_phase,
+            output_path=os.path.join(output_dir, f"phase_energy_{exp_name}.png"),
+            exp_name=exp_name
+        )
+
 
 
 if __name__ == "__main__":
-    log_dir = "/home/zsong/continuum/eventloglocal/logs03/eventlog"
+    log_dir = "/home/zsong/continuum/eventloglocal/logs01/eventlog"
     output_dir = os.path.join(log_dir, "picforno1")
     os.makedirs(output_dir, exist_ok=True)
 
