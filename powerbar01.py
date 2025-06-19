@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 log_base_dir = "/home/zsong/continuum/eventloglocal/logs01/eventlog"
 base_power_dir = "/home/zsong/continuum/TPCDSEC616"
 target_vm = "cloud0_zsong"
-target_exp = "T1-3"
+target_exp = "T3-3"
 
 # === 阶段颜色映射 ===
 color_map = {
@@ -111,6 +111,26 @@ def extract_stage_phases(log_path):
             phase_ranges.append((start / 1000, end / 1000, phase))
     return phase_ranges
 
+# def read_avg_power_series(base_dir, target_vm, target_exp):
+#     all_ts = []
+#     all_pw = []
+#     for i in range(1, 4):
+#         fpath = os.path.join(base_dir, f"result_{i}", "vm_power_dynamic.txt")
+#         ts_list = []
+#         pw_list = []
+#         with open(fpath) as f:
+#             for line in f:
+#                 ts, vm, power, exp = line.strip().split(",")
+#                 if vm == target_vm and exp == target_exp:
+#                     ts_list.append(float(ts))
+#                     pw_list.append(float(power))
+#         all_ts.append(ts_list)
+#         all_pw.append(pw_list)
+
+#     # 对齐时间戳（假设都一样）
+#     timestamps = all_ts[0]
+#     avg_pw = [np.mean([all_pw[j][i] for j in range(3)]) for i in range(len(timestamps))]
+#     return timestamps, avg_pw
 def read_avg_power_series(base_dir, target_vm, target_exp):
     all_ts = []
     all_pw = []
@@ -127,12 +147,16 @@ def read_avg_power_series(base_dir, target_vm, target_exp):
         all_ts.append(ts_list)
         all_pw.append(pw_list)
 
-    # 对齐时间戳（假设都一样）
+    # === 修正部分：按最短长度统一对齐 ===
+    min_len = min(len(p) for p in all_pw)
+    all_ts = [ts[:min_len] for ts in all_ts]
+    all_pw = [pw[:min_len] for pw in all_pw]
+
     timestamps = all_ts[0]
-    avg_pw = [np.mean([all_pw[j][i] for j in range(3)]) for i in range(len(timestamps))]
+    avg_pw = [np.mean([all_pw[j][i] for j in range(3)]) for i in range(min_len)]
     return timestamps, avg_pw
 
-def plot_power_with_phases(timestamps, powers, phase_ranges, out_path="power_phased.png"):
+def plot_power_with_phases(timestamps, powers, phase_ranges, out_path):
     start_time = timestamps[0]
     rel_timestamps = [ts - start_time for ts in timestamps]
 
@@ -193,4 +217,6 @@ if __name__ == "__main__":
     log_path = find_eventlog_for_experiment(log_base_dir, target_exp)
     phase_ranges = extract_stage_phases(log_path)
     timestamps, power_values = read_avg_power_series(base_power_dir, target_vm, target_exp)
-    plot_power_with_phases(timestamps, power_values, phase_ranges)
+    out_path = f"power_phased_{target_exp}.png"
+    plot_power_with_phases(timestamps, power_values, phase_ranges, out_path=out_path)
+
