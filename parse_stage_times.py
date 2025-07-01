@@ -137,7 +137,7 @@ def split_energy_by_duration(total_energy, total_durations):
         energy_per_phase[phase] = total_energy * (dur / total_time) if total_time > 0 else 0
     return energy_per_phase
 
-def draw_energy_bar(energy_per_phase, output_path="phase_energy.png", exp_name=None):
+def draw_energy_bar(energy_per_phase, output_path="phase_energy.png", exp_name=None, ymax=None):
     import matplotlib.pyplot as plt
 
     phases = list(energy_per_phase.keys())
@@ -151,7 +151,9 @@ def draw_energy_bar(energy_per_phase, output_path="phase_energy.png", exp_name=N
     else:
         plt.title("Energy Usage by Phase")
     plt.grid(axis='y')
-
+    # 设置统一 y 轴上限
+    top = ymax if ymax is not None else max(values) * 1.1
+    plt.ylim(0, top)
     # 在柱子上添加具体的能耗数值
     for bar, value in zip(bars, values):
         height = bar.get_height()
@@ -190,7 +192,8 @@ def process_log(log_path, output_dir):
         draw_energy_bar(
             energy_by_phase,
             output_path=os.path.join(output_dir, f"phase_energy_{exp_name}.png"),
-            exp_name=exp_name
+            exp_name=exp_name,
+            ymax=300
         )
 
 

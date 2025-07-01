@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 log_base_dir = "/home/zsong/continuum/eventloglocal/logs01/eventlog"
 base_power_dir = "/home/zsong/continuum/TPCDSEC616"
 target_vm = "cloud0_zsong"
-target_exp = "T3-3"
+# target_exp = "T2-3"
 
 # === 阶段颜色映射 ===
 color_map = {
@@ -15,7 +15,7 @@ color_map = {
     "Join": "salmon",
     "Write": "lightgreen",
     "Aggregate": "violet",
-    "Init(Map & Parallelize)": "gray",
+    "Init(Map & Parallelize)": "black",
     "TakeOrdered": "yellow",
     "Exchange(shuffle/aggregate)": "orange",
     "Other": "lightgray"
@@ -111,26 +111,7 @@ def extract_stage_phases(log_path):
             phase_ranges.append((start / 1000, end / 1000, phase))
     return phase_ranges
 
-# def read_avg_power_series(base_dir, target_vm, target_exp):
-#     all_ts = []
-#     all_pw = []
-#     for i in range(1, 4):
-#         fpath = os.path.join(base_dir, f"result_{i}", "vm_power_dynamic.txt")
-#         ts_list = []
-#         pw_list = []
-#         with open(fpath) as f:
-#             for line in f:
-#                 ts, vm, power, exp = line.strip().split(",")
-#                 if vm == target_vm and exp == target_exp:
-#                     ts_list.append(float(ts))
-#                     pw_list.append(float(power))
-#         all_ts.append(ts_list)
-#         all_pw.append(pw_list)
 
-#     # 对齐时间戳（假设都一样）
-#     timestamps = all_ts[0]
-#     avg_pw = [np.mean([all_pw[j][i] for j in range(3)]) for i in range(len(timestamps))]
-#     return timestamps, avg_pw
 def read_avg_power_series(base_dir, target_vm, target_exp):
     all_ts = []
     all_pw = []
@@ -157,27 +138,21 @@ def read_avg_power_series(base_dir, target_vm, target_exp):
     return timestamps, avg_pw
 
 def plot_power_with_phases(timestamps, powers, phase_ranges, out_path):
+    import matplotlib.patches as mpatches
+
     start_time = timestamps[0]
     rel_timestamps = [ts - start_time for ts in timestamps]
 
-    # === 阶段对齐与额外标记 ===
+    # === 阶段对齐 ===
     adjusted_phases = []
+    phase_names_seen = []
 
-    # # Post-Query（功耗存在但阶段结束）
-    # if adjusted_phases:
-    #     last_stage_end = max(end for _, end, _ in adjusted_phases)
-    # else:
-    #     last_stage_end = 0
-    # last_power_time = rel_timestamps[-1]
-    # if last_power_time > last_stage_end:
-    #     adjusted_phases.append((last_stage_end, last_power_time, "Post-Query"))
-    #     color_map["Post-Query"] = "None"
-
-    # Startup（功耗早于阶段）
     first_stage_start = min(start for start, end, phase in phase_ranges)
     if first_stage_start > start_time:
         adjusted_phases.append((0, first_stage_start - start_time, "Startup"))
-        color_map["Startup"] = "black"
+        color_map["Startup"] = "grey"
+        phase_names_seen.insert(0, "Startup")  # ✅ 保证 Startup 是 P1
+
 
     for (start, end, phase) in phase_ranges:
         if end < start_time:
@@ -185,27 +160,44 @@ def plot_power_with_phases(timestamps, powers, phase_ranges, out_path):
         rel_start = max(0, start - start_time)
         rel_end = end - start_time
         adjusted_phases.append((rel_start, rel_end, phase))
+        if phase not in phase_names_seen:
+            phase_names_seen.append(phase)
+
+    # === 编号映射 e.g. "P1: Init"
+    phase_to_id = {name: f"P{i+1}" for i, name in enumerate(phase_names_seen)}
 
     # === 绘图 ===
-    plt.figure(figsize=(12, 5))
-    plt.plot(rel_timestamps, powers, label="Power (W)", color="green")
+    plt.figure(figsize=(12, 4.8))
+    plt.plot(rel_timestamps, powers, label="Power (W)", color="green", linewidth=2.2)
+    plt.xlim(min(rel_timestamps), max(rel_timestamps))
+    plt.ylim(min(powers) * 0.95, max(powers) * 1.05)
+    plt.xlim(left=0)
+
+    # === 绘制底部阶段横条 ===
+    y_min, y_max = plt.ylim()
+    bar_height = y_min + 0.05 * (y_max - y_min)
+    bar_bottom = y_min - 0.05 * (y_max - y_min)
 
     for (rel_start, rel_end, phase) in adjusted_phases:
         color = color_map.get(phase, "lightgray")
-        plt.axvspan(rel_start, rel_end, color=color, alpha=0.3, label=phase)
+        plt.fill_betweenx([bar_bottom, bar_height], rel_start, rel_end, color=color, alpha=0.7)
+        label = phase_to_id.get(phase, "")  # e.g., "P2"
+  
 
+    # === 添加阶段编号图例 ===
+    custom_legend = [mpatches.Patch(color=color_map.get(p, "gray"), label=f"{phase_to_id[p]}: {p}")
+                     for p in phase_names_seen]
+    plt.legend(handles=custom_legend, loc='upper center', bbox_to_anchor=(0.5, 1.15), ncol=4, fontsize=9)
+
+    # === 坐标轴 ===
     plt.xlabel("Time Since Query Start (s)")
     plt.ylabel("Power (W)")
-    plt.title(f"Power Over Time with Phase Highlighting ({target_exp})")
 
-    handles, labels = plt.gca().get_legend_handles_labels()
-    by_label = dict(zip(labels, handles))
-    plt.legend(by_label.values(), by_label.keys(), loc="upper right")
-
-    # 平均执行时间注释
+    # === Duration 注释
     duration = timestamps[-1] - timestamps[0]
-    plt.annotate(f"Avg Duration ≈ {duration:.1f}s", xy=(0.99, 0.01), xycoords='axes fraction',
-                 ha='right', va='bottom', fontsize=10, color='gray')
+    plt.annotate(f"Avg Duration ≈ {duration:.1f}s", xy=(0.01, 0.99), xycoords='axes fraction',
+             ha='left', va='top', fontsize=10, color='black')
+
 
     plt.tight_layout()
     plt.savefig(out_path)
@@ -214,9 +206,41 @@ def plot_power_with_phases(timestamps, powers, phase_ranges, out_path):
 
 # === 主流程 ===
 if __name__ == "__main__":
-    log_path = find_eventlog_for_experiment(log_base_dir, target_exp)
-    phase_ranges = extract_stage_phases(log_path)
-    timestamps, power_values = read_avg_power_series(base_power_dir, target_vm, target_exp)
-    out_path = f"power_phased_{target_exp}.png"
-    plot_power_with_phases(timestamps, power_values, phase_ranges, out_path=out_path)
+    # log_path = find_eventlog_for_experiment(log_base_dir, target_exp)
+    # phase_ranges = extract_stage_phases(log_path)
+    # timestamps, power_values = read_avg_power_series(base_power_dir, target_vm, target_exp)
+    # out_path = f"power_phased_{target_exp}.png"
+    # plot_power_with_phases(timestamps, power_values, phase_ranges, out_path=out_path)
+    # === 实验配置列表（直接贴上你的那一大段）===
+    experiment_configs = [
+        {"name": "T1-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 1, "mem": "4g", "repeat": 1},
+        {"name": "T1-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 1},
+        {"name": "T1-3", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 4, "mem": "8g", "repeat": 1},
+        {"name": "T1-4", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g", "repeat": 1},
+        {"name": "T2-1", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 6},
+        {"name": "T2-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 12},
+        {"name": "T2-3", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 18},
+        {"name": "T3-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 2, "mem": "4g", "repeat": 3},
+        {"name": "T3-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 2, "mem": "4g", "repeat": 6},
+        {"name": "T3-3", "scale": 10, "query": "q3-v2.4", "instances": 4, "cores": 2, "mem": "4g", "repeat": 12},
+        {"name": "T4-1", "scale": 10, "query": "q3-v2.4", "instances": 1, "cores": 6, "mem": "12g", "repeat": 1},
+        {"name": "T4-2", "scale": 10, "query": "q3-v2.4", "instances": 2, "cores": 3, "mem": "6g", "repeat": 1},
+        {"name": "T4-3", "scale": 10, "query": "q3-v2.4", "instances": 3, "cores": 2, "mem": "4g", "repeat": 1},
+        {"name": "T5-q5",  "scale": 10, "query": "q5-v2.4",  "instances": 2, "cores": 2, "mem": "6g", "repeat": 1},
+        {"name": "T5-q18", "scale": 10, "query": "q18-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 1},
+        {"name": "T5-q64", "scale": 10, "query": "q64-v2.4", "instances": 2, "cores": 2, "mem": "6g", "repeat": 1}
+    ]
+
+    # === 自动批量绘图 ===
+    for cfg in experiment_configs:
+        target_exp = cfg["name"]
+        try:
+            log_path = find_eventlog_for_experiment(log_base_dir, target_exp)
+            phase_ranges = extract_stage_phases(log_path)
+            timestamps, power_values = read_avg_power_series(base_power_dir, target_vm, target_exp)
+            out_path = f"power_phased_{target_exp}.png"
+            plot_power_with_phases(timestamps, power_values, phase_ranges, out_path=out_path)
+        except Exception as e:
+            print(f"[❌] Failed to generate plot for {target_exp}: {e}")
+
 

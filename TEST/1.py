@@ -31,31 +31,23 @@ CONFIGS = {
     "idle-baseline": {},
 
     # Strong Scaling: Fixed problem size, increased resources (number of threads)
-    "st-1": {"params": 100000, "threads": 1, "memory": "1g", "instances": 1},
-    "st-2": {"params": 100000, "threads": 2, "memory": "1g", "instances": 1},
-    "st-4": {"params": 100000, "threads": 4, "memory": "1g", "instances": 1},
+    "ss-1": {"params": 100000, "threads": 1, "memory": "1g", "instances": 1},
+    "ss-2": {"params": 100000, "threads": 2, "memory": "1g", "instances": 1},
+    "ss-4": {"params": 100000, "threads": 4, "memory": "1g", "instances": 1},
 
     # Increasing Problem Size: Fixed resources, increasing workload
-    "sc-1":  {"params": 50000,  "threads": 2, "memory": "2g", "instances": 1},
-    "sc-2": {"params": 100000, "threads": 2, "memory": "2g", "instances": 1},
-    "sc-3":  {"params": 200000, "threads": 2, "memory": "2g", "instances": 1},
+    "iw-1":  {"params": 50000,  "threads": 2, "memory": "2g", "instances": 1},
+    "iw-2": {"params": 100000, "threads": 2, "memory": "2g", "instances": 1},
+    "iw-3":  {"params": 200000, "threads": 2, "memory": "2g", "instances": 1},
 
-    # Weak Scaling: Fixed number of problems, multiple instances in parallel
-    "w-1in": {"params": 100000, "threads": 1, "memory": "1g", "instances": 1},
-    "w-2in": {"params": 100000, "threads": 1, "memory": "1g", "instances": 2},
-    "w-4in": {"params": 100000, "threads": 1, "memory": "1g", "instances": 4},
-
+    "ws-1": {"params": 50000, "threads": 1, "memory": "1g", "instances": 1},
+    "ws-2": {"params": 100000, "threads": 1, "memory": "1g", "instances": 2},
+    "ws-3": {"params": 200000, "threads": 1, "memory": "1g", "instances": 4},
     # Split Scaling: The total amount of tasks is fixed and each instance is allocated
     "sp-2in": {"params": 50000, "threads": 1, "memory": "1g", "instances": 2},  # 2*50000 = 100000
     "sp-4in": {"params": 25000, "threads": 1, "memory": "1g", "instances": 4},  # 4*25000 = 100000
 }
-# CONFIGS = {
-#     # In the SparkPi example, it represents the number of random point pairs used to estimate the value of π. A larger value means a greater computational workload and a longer task time.
-#     "idle-baseline": {},
 
-#     # Strong Scaling: Fixed problem size, increased resources (number of threads)
-#     "st-1": {"params": 3000, "threads": 1, "memory": "1g", "instances": 1},
-# }
 def cleanup_k8s_pods():
     print("🧹 Cleaning up old Kubernetes pods on controller node...")
     ssh_cmd = (
