@@ -479,7 +479,7 @@ This README walks through integrating Scaphandre with Continuum’s QEMU backend
 
 If you have questions, feel free to open an issue or ping me!
 
-## 8. 更新
+<!-- ## 8. 更新
 6月16日，目前616版本实现了仅运行查询，并且同步更新了能耗图绘图以及折线图，以及现在可以指定query的重复次数，用repeat参数控制即可。
 同时 目前还做了eventlog的生成
 
@@ -496,4 +496,4 @@ drawerrorbar.py是最新的画能耗图的逻辑，能得到能耗图的mean max
 
 这两个脚本都很自动化，基本就是写实验名称就直接给你输出好了的，所以很方便。其中折线图只用到了一次的日志，日志不需要那么多次的了。drawerrorbar和日志无关，只是加了个errorbar去读取所有的三次的数据而已。
 ## 9. Todo
-图全都可以干了，就差写故事了
+图全都可以干了，就差写故事了 -->
