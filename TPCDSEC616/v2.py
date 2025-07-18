@@ -306,7 +306,7 @@ def main():
         else:
             print("⚠️ No energy data found, skipping energy comparison chart")
     # === Move event logs from VM to local after all experiments ===
-    print("\n🚚 Moving event logs to local machine...")
+    print("Moving event logs to local machine...")
     local_dir = os.path.expanduser("~/continuum/eventloglocal")
     os.makedirs(local_dir, exist_ok=True)
 

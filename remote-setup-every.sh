@@ -1,17 +1,17 @@
 #!/bin/bash
 
-# === STEP 0: 重新构建 VM ===
+# 
 echo "[🔁] Rebuilding VMs..."
 sleep 1
 rm -rf /mnt/sdc/zsong/.continuum && \
     sudo sysctl -p /etc/sysctl.conf && \
     python3 continuum.py configuration/qemu_kube_only.cfg
 
-# === STEP 1: 在 controller VM 内部配置 ===
+# 
 echo "[⚙️] Configuring controller VM..."
 ssh cloud_controller_zsong@192.168.166.2 -i /home/zsong/.ssh/id_rsa_continuum 'bash -s' <<'EOF'
 
-# 基础环境配置
+# 
 sudo apt update && \
   sudo apt install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin && \
   sudo apt install -y docker-compose && \
@@ -21,20 +21,20 @@ sudo apt update && \
   sudo systemctl enable containerd.service && \
   sudo systemctl start docker
 
-# 安装 SDKMAN 和 Java
+# 
 cd ~ && \
   sudo apt install -y zip unzip && \
   curl -s "https://get.sdkman.io" | bash && \
   source "$HOME/.sdkman/bin/sdkman-init.sh" && \
   sdk install java 11.0.26-amzn
 
-# clone spark generator 项目
+# 
 git clone https://github.com/sacheendra/spark-data-generator.git && \
   cd ~/spark-data-generator/docker && \
   mkdir db_data warehouse && \
   docker-compose up -d
 
-# 安装 sbt 并构建 jar 包
+# 
 sudo apt-get update && \
   sudo apt-get install apt-transport-https curl gnupg -yqq && \
   echo "deb https://repo.scala-sbt.org/scalasbt/debian all main" | sudo tee /etc/apt/sources.list.d/sbt.list && \
@@ -47,12 +47,12 @@ sudo apt-get update && \
   cd ~/spark-data-generator && \
   sbt package
 
-# 构建 docker 镜像
+# 
 cd ~/spark-data-generator && \
   sudo docker build -t "spark-benchmark-v1.0" -f docker/Dockerfile . && \
   sudo docker tag spark-benchmark-v1.0 sacheendra/contispark:bench-v1.0
 
-# 下载并配置 spark
+# 
 cd ~ && \
   wget https://archive.apache.org/dist/spark/spark-3.4.4/spark-3.4.4-bin-hadoop3.tgz && \
   tar xvf spark-3.4.4-bin-hadoop3.tgz && \
@@ -71,7 +71,7 @@ kubectl create clusterrolebinding spark-anonymous-binding \
   --clusterrole=edit \
   --user=system:anonymous || true
 
-# 拷贝证书以便 node6 导入
+# 
 sudo cp /etc/kubernetes/pki/ca.crt /home/cloud_controller_zsong/
 sudo chown cloud_controller_zsong:cloud_controller_zsong /home/cloud_controller_zsong/ca.crt
 
@@ -90,8 +90,8 @@ cd ~/spark-3.4.4-bin-hadoop3 && \
 
 EOF
 
-# === STEP 2: Node6 本地导入证书 ===
-echo "[🔐] Importing CA certificate on node6..."
+# 
+echo " Importing CA certificate on node6..."
 scp -i ~/.ssh/id_rsa_continuum cloud_controller_zsong@192.168.166.2:/home/cloud_controller_zsong/ca.crt ~/ca.crt
 
 sudo ~/.sdkman/candidates/java/11.0.26-amzn/bin/keytool \
@@ -107,4 +107,4 @@ sudo ~/.sdkman/candidates/java/11.0.26-amzn/bin/keytool -import -trustcacerts \
   -storepass changeit \
   -noprompt
 
-echo "✅ 全部完成！你现在可以提交 Spark 测试任务了。"
+echo "done!"
